@@ -5,6 +5,7 @@ import org.tictactoe.exceptions.ChildrenCollectionException;
 import org.tictactoe.exceptions.IllegalStatusException;
 
 /**
+ * Tree class
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
@@ -17,6 +18,12 @@ public class Tree{
         root = new Node(rootSize);
         currentNode = root;
     }
+
+    /**
+     * Method adds new child node to the current node and moves current node to the new node
+     * @param position position on the board
+     * @throws ChildrenCollectionException
+     */
     public void addNode(int position) throws ChildrenCollectionException
     {
         Node node = new Node(currentNode.getMaxChildrenCapacity()-1);
@@ -34,14 +41,16 @@ public class Tree{
     }
     public void moveToParent()
     {
-        if(currentNode.equals(root))return;
+        if(currentNode.equals(root)){
+            return;
+        }
         currentNode = currentNode.getParent();
     }
     /**
      * Method finds the child Node with the given position on the game board
      * @return Node or null if position is empty
      */
-    public Node findNodeWithGivenPosition(int position)
+    public Node findChildNodeWithGivenPosition(int position)
     {
         for(Node node : currentNode.getChildren())
         {
@@ -53,7 +62,7 @@ public class Tree{
         return null;
     }
     /**
-     * Moves current node to the given child node
+     * Moves current pointer to the given child node
      */
     public void moveToChild(Node node) throws ChildNodeNotFoundException
     {
@@ -66,39 +75,31 @@ public class Tree{
             }
         }
 
-        throw new ChildNodeNotFoundException("Given child node is not found");
+        throw new ChildNodeNotFoundException("Given child node is not found. Node: " + node.toString());
     }
     public Node getCurrentNode()
     {
         return currentNode;
     }
     /**
-     * Method updates status of all the nodes in the current branch (upp to the
+     * Method updates status of all the nodes in the current branch (up to the
      * root). Call this method when the game is over. Update current node status
      * before calling this method.
-     * @param isFirstCall set to true when you call this method
-     * @throws Exception if Current node status = -1
      */
-    public void updateBranchStatus(boolean isFirstCall) throws IllegalStatusException
+    public void updateTreeStatus() throws IllegalStatusException
+    {
+        updateBranchStatus(true);
+    }
+    private void updateBranchStatus(boolean isFirstCall) throws IllegalStatusException
     {
         int losers=0;
         int draws=0;
 
         if(isFirstCall)
         {
-            if(currentNode.getStatus()==NodeStatus.UNKNOWN)
-            {
-                throw new IllegalStatusException("The node status has 'unknown' value. It " +
-                        "should be changed before calling 'UpdateBranchStatus' method.");
-            }
-
-            if(currentNode.getParent()!=null)
-            {
-                currentNode = currentNode.getParent();
-                updateBranchStatus(false);
-            }
+            updateBranchStatusFirstCall();
             return;
-        } // first call
+        }
 
         // check all the children
         for(Node node : currentNode.getChildren())
@@ -126,22 +127,45 @@ public class Tree{
             }
         } // for
 
-        if(losers== currentNode.getMaxChildrenCapacity())
-        {
-            // if ALL children are losers, parent win
-            currentNode.setStatus(NodeStatus.WIN);
-            // and continue
-            if(currentNode.getParent()!=null)
-            {
-                currentNode = currentNode.getParent();
-                updateBranchStatus(false);
-            }
-            return;
-        } // all children are losers
+        updateBranchStatusLose(losers);
+        updateBranchStatusDraw(draws);
+    }
 
-        if(draws== currentNode.getMaxChildrenCapacity())
+    private void updateBranchStatusDraw(int draws) {
+        if(draws != currentNode.getMaxChildrenCapacity())
         {
-            currentNode.setStatus(NodeStatus.DRAW);
+            return;
+        }
+        currentNode.setStatus(NodeStatus.DRAW);
+    }
+
+    private void updateBranchStatusLose(int losers) throws IllegalStatusException {
+        if(losers != currentNode.getMaxChildrenCapacity())
+        {
+            return;
+        }
+        // if ALL children are losers, parent win
+        currentNode.setStatus(NodeStatus.WIN);
+        if(currentNode.getParent()==null)
+        {
+            return;
+        }
+        currentNode = currentNode.getParent();
+        updateBranchStatus(false);
+    }
+
+    private void updateBranchStatusFirstCall() throws IllegalStatusException
+    {
+        if(currentNode.getStatus()== NodeStatus.UNKNOWN)
+        {
+            throw new IllegalStatusException("The node status has 'unknown' value. It " +
+                    "should be changed before calling 'UpdateBranchStatus' method.");
+        }
+
+        if(currentNode.getParent()!=null)
+        {
+            currentNode = currentNode.getParent();
+            updateBranchStatus(false);
         }
     }
 }

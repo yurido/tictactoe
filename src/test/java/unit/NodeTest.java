@@ -13,7 +13,6 @@ import org.tictactoe.exceptions.ChildrenCollectionException;
 /**
  * @author Yury Dorofeev
  * @version 2015-09-07
- * @company Dynabyte AB
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NodeTest {

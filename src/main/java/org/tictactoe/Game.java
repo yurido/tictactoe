@@ -58,7 +58,7 @@ public class Game{
             gameGrid.set(position, figure);
 
             // add new node to the tree
-            Node Node = tree.findNodeWithPosition(position);
+            Node Node = tree.findChildNodeWithGivenPosition(position);
             if (Node == null) {
                 // add new node to the tree
                 tree.addNode(position);
@@ -288,7 +288,7 @@ public class Game{
             // new node ?
             if(SchemaStatus==NodeStatus.NEW_NODE){
                 // if children limit is not reached
-                if(CurrentNode.getChildrenNumber()<CurrentNode.getMaxChildrenCapacity()){
+                if(CurrentNode.getChildren().size()<CurrentNode.getMaxChildrenCapacity()){
                     return null;
                 }
             }
@@ -306,12 +306,12 @@ public class Game{
         if(CurrentNode.getMaxChildrenCapacity()>0){
 
             // create new
-            if(CurrentNode.getChildrenNumber()<CurrentNode.getMaxChildrenCapacity()){
+            if(CurrentNode.getChildren().size()<CurrentNode.getMaxChildrenCapacity()){
                 return null;
             }
 
             // take the first one
-            if(CurrentNode.getChildrenNumber()>0){
+            if(CurrentNode.getChildren().size()>0){
                 return CurrentNode.getChild(0);
             }
 
