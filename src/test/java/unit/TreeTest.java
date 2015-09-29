@@ -14,7 +14,8 @@ public class TreeTest {
     private Tree tree;
 
     @Before
-    public void setup(){
+    public void setup()
+    {
         tree = new Tree(4);
     }
 }

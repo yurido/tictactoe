@@ -7,7 +7,6 @@ import java.util.UUID;
 /**
  * @author Yury Dorofeev
  * @version 2015-09-07
- * @company Dynabyte AB
  */
 public class Node{
     private Node parent=null;
@@ -19,14 +18,13 @@ public class Node{
     private int level=0;    // the node level in the node tree
     private int maxChildrenCapacity=0;
 
-    /**
-     * Constructor
-     * @param size max size of the children collection
-     * @throws IllegalArgumentException
-     */
-    public Node(int size) throws IllegalArgumentException{
+    public Node(int size) throws IllegalArgumentException
+    {
         parent = null;
-        if(size<0) throw new IllegalArgumentException("children collection size is < 0");
+        if(size<0)
+        {
+            throw new IllegalArgumentException("children collection size is < 0");
+        }
         children = new ArrayList<Node>(size);
         UID = UUID.randomUUID();
         status = NodeStatus.UNKNOWN;
@@ -35,37 +33,75 @@ public class Node{
         level = 0;
         maxChildrenCapacity = size;
     }
-    public void setParent(Node node){parent = node;}
-    public Node getParent(){return parent;}
-    /**
-     * Adds new Child to the collection
-     * @param node new child
-     */
-    public void addChild(Node node) throws ChildrenCollectionException{
-        if(getChildrenNumber() >= getMaxChildrenCapacity()) {
+    public void setParent(Node node)
+    {
+        parent = node;
+    }
+    public Node getParent()
+    {
+        return parent;
+    }
+    public void addChild(Node node) throws ChildrenCollectionException
+    {
+        if(children!=null && children.size() >= getMaxChildrenCapacity())
+        {
             throw new ChildrenCollectionException("The children collection is full. You can not add more nodes!");
         }
         node.setParent(this);
         node.setLevel(getLevel() + 1);
         children.add(node);
     }
-    public Node getChild(int index) throws ArrayIndexOutOfBoundsException{
+    public Node getChild(int index)
+    {
         return children.get(index);
     }
-    public UUID getUID(){return UID;}
-    public NodeStatus getStatus(){return status;}
-    public void setStatus(NodeStatus value){status = value;}
-    public int getPosition(){return position;}
-    public void setPosition(int value){position = value;}
-    public void setWeight(int value){weight = value;}
-    public int getWeight(){return weight;}
-    public int getLevel(){return level;}
-    public int getChildrenNumber(){return children.size();}
-    public int getMaxChildrenCapacity(){return maxChildrenCapacity;}
-    public ArrayList<Node> getChildren(){return children;}
-    public void setLevel(int value){level = value;}
+    public UUID getUID()
+    {
+        return UID;
+    }
+    public NodeStatus getStatus()
+    {
+        return status;
+    }
+    public void setStatus(NodeStatus status)
+    {
+        this.status = status;
+    }
+    public int getPosition()
+    {
+        return position;
+    }
+    public void setPosition(int position)
+    {
+        this.position = position;
+    }
+    public void setWeight(int weight)
+    {
+        this.weight = weight;
+    }
+    public int getWeight()
+    {
+        return weight;
+    }
+    public int getLevel()
+    {
+        return level;
+    }
+    public int getMaxChildrenCapacity()
+    {
+        return maxChildrenCapacity;
+    }
+    public ArrayList<Node> getChildren()
+    {
+        return children;
+    }
+    public void setLevel(int level)
+    {
+        this.level = level;
+    }
     @Override
-    public String toString(){
+    public String toString()
+    {
         StringBuilder value = new StringBuilder();
 
         value.append("Node, UUID=" + getUID());
@@ -75,13 +111,22 @@ public class Node{
 
         // parent
         if(getParent()!=null)
-            value.append(", parent="+getParent().getUID() );
+        {
+            value.append(", parent=" + getParent().getUID());
+        }
         else
+        {
             value.append(", parent=null");
+        }
 
         // children
+        String childrenNumber = "0";
+        if(children!=null)
+        {
+            childrenNumber = String.valueOf(children.size());
+        }
         value.append(", MAX children number=" + getMaxChildrenCapacity());
-        value.append(", Current children number=" + getChildrenNumber());
+        value.append(", Current children number=" + childrenNumber);
 
         return value.toString();
     }

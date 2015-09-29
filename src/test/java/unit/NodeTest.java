@@ -1,5 +1,7 @@
 package unit;
 
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.tictactoe.Node;
@@ -15,12 +17,18 @@ import org.tictactoe.exceptions.ChildrenCollectionException;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NodeTest {
-    @Test(expected = IllegalArgumentException.class)
-    public void collectionSizeError(){
-        Node Root = new Node(-1);
+    @Rule
+    public ExpectedException expectException = ExpectedException.none();
+
+    @Test
+    public void collectionSizeError()
+    {
+        expectException.expect(IllegalArgumentException.class);
+        expectException.expectMessage("children collection size is < 0");
+        new Node(-1);
     }
     @Test
-    public void test_fails() throws Exception {
+    public void testFails() throws ChildrenCollectionException {
         Node Root = new Node(3);
 
         assertEquals(null, Root.getParent());
@@ -41,8 +49,11 @@ public class NodeTest {
         assertEquals(NodeStatus.UNKNOWN, N.getStatus());
         System.out.println(Root.toString());
     }
-    @Test(expected = ChildrenCollectionException.class)
-    public void childrenCollectionIsFullError() throws ChildrenCollectionException {
+    @Test
+    public void childrenCollectionIsFullError() throws ChildrenCollectionException
+    {
+        expectException.expect(ChildrenCollectionException.class);
+        expectException.expectMessage("The children collection is full. You can not add more nodes!");
         Node node = new Node(2);
         node.addChild(new Node(1));
         node.addChild(new Node(1));
@@ -50,8 +61,9 @@ public class NodeTest {
         node.addChild(new Node(1));
         node.addChild(new Node(1));
     }
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void getChildError(){
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getChildError()
+    {
         Node node = new Node(2);
         node.getChild(10);
     }

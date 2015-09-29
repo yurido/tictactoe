@@ -1,13 +1,13 @@
 package org.tictactoe.exceptions;
 
 /**
- * ChildrenCollectionException
+ * IllegalStatusException
  * @author Yury Dorofeev
  * @version 2015-09-29
  * @company Dynabyte AB
  */
-public class ChildrenCollectionException extends Exception {
-    public ChildrenCollectionException(String message)
+public class IllegalStatusException extends Exception {
+    public IllegalStatusException(String message)
     {
         super(message);
     }
