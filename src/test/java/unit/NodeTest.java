@@ -46,7 +46,7 @@ public class NodeTest {
 
         Node N = Root.getChild(0);
         assertEquals(NodeStatus.UNKNOWN, N.getStatus());
-        System.out.println(Root.toString());
+        // System.out.println(Root.toString());
     }
     @Test
     public void childrenCollectionIsFullError() throws ChildrenCollectionException

@@ -9,6 +9,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.tictactoe.Node;
+import org.tictactoe.NodeStatus;
 import org.tictactoe.Tree;
 import org.tictactoe.exceptions.ChildNodeNotFoundException;
 import org.tictactoe.exceptions.ChildrenCollectionException;
@@ -100,5 +101,63 @@ public class TreeTest {
         expectException.expectMessage("The node status has 'unknown' value. It " +
                 "should be changed before calling 'UpdateBranchStatus' method.");
         tree.updateTreeStatus();
+    }
+
+    @Test
+    public void updateBranchStatusWinTwoIterations() throws ChildrenCollectionException, IllegalStatusException {
+        Tree tree = new Tree(2);
+        tree.addNode(0);
+        tree.addNode(2);
+        tree.getCurrentNode().setStatus(NodeStatus.WIN);
+        assertTrue(tree.getCurrentNode().getLevel() == 2);
+        assertTrue(tree.getCurrentNode().getMaxChildrenCapacity() == 0);
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.UNKNOWN);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+        assertTrue(tree.getCurrentNode().getLevel()==0);
+
+        tree.moveToRoot();
+        tree.addNode(1);
+        tree.addNode(3);
+        tree.getCurrentNode().setStatus(NodeStatus.WIN);
+        assertTrue(tree.getCurrentNode().getLevel() == 2);
+        assertTrue(tree.getCurrentNode().getMaxChildrenCapacity() == 0);
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.WIN);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+        assertTrue(tree.getCurrentNode().getLevel()==0);
+    }
+
+    @Test
+    public void updateBranchStatusLoseOneIteration() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+        Tree tree = new Tree(2);
+        tree.addNode(0);
+        tree.addNode(2);
+        tree.getCurrentNode().setStatus(NodeStatus.LOSE);
+        assertTrue(tree.getCurrentNode().getLevel() == 2);
+        assertTrue(tree.getCurrentNode().getMaxChildrenCapacity() == 0);
+        assertTrue(tree.getCurrentNode().getPosition() == 2);
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.LOSE);
+
+        tree.moveToRoot();
+        tree.addNode(1);
+        tree.addNode(3);
+        tree.moveToRoot();
+        // move to the bottom
+        Node currentNode = tree.findChildNodeWithGivenPosition(0);
+        tree.moveToChild(currentNode);
+        currentNode = tree.findChildNodeWithGivenPosition(2);
+        tree.moveToChild(currentNode);
+        assertTrue(tree.getCurrentNode().getLevel() == 2);
+        assertTrue(tree.getCurrentNode().getPosition() == 2);
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.LOSE);
+
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.LOSE);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+        assertTrue(tree.getCurrentNode().getLevel() == 0);
     }
 }
