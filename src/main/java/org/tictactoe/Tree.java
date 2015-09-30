@@ -94,6 +94,7 @@ public class Tree{
     {
         int losers=0;
         int draws=0;
+        boolean allChildrenHaveStatus=(currentNode.getMaxChildrenCapacity()==currentNode.getChildren().size());
 
         if(isFirstCall)
         {
@@ -108,13 +109,7 @@ public class Tree{
             {
                 case WIN:
                     // if a Child win then Parent loose
-                    currentNode.setStatus(NodeStatus.LOSE);
-                    if(currentNode.getParent()==null)
-                    {
-                        return;
-                    }
-                    currentNode = currentNode.getParent();
-                    updateBranchStatus(false);
+                    updateStatusAndMoveToParent(NodeStatus.LOSE.toString());
                     return;
                 case LOSE:
                     // if ALL children lose then parent win
@@ -122,21 +117,21 @@ public class Tree{
                     break;
                 case DRAW:
                     draws++;
+                    break;
                 default:
+                    allChildrenHaveStatus=false;
                     break;
             }
         } // for
 
         updateBranchStatusLose(losers);
-        updateBranchStatusDraw(draws);
+        updateBranchStatusDraw(draws, allChildrenHaveStatus);
     }
-
-    private void updateBranchStatusDraw(int draws) {
-        if(draws != currentNode.getMaxChildrenCapacity())
+    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws IllegalStatusException {
+        if(draws == currentNode.getMaxChildrenCapacity() || allChildrenHaveStatus)
         {
-            return;
+            updateStatusAndMoveToParent(NodeStatus.DRAW.toString());
         }
-        currentNode.setStatus(NodeStatus.DRAW);
     }
 
     private void updateBranchStatusLose(int losers) throws IllegalStatusException {
@@ -145,13 +140,7 @@ public class Tree{
             return;
         }
         // if ALL children are losers, parent win
-        currentNode.setStatus(NodeStatus.WIN);
-        if(currentNode.getParent()==null)
-        {
-            return;
-        }
-        currentNode = currentNode.getParent();
-        updateBranchStatus(false);
+        updateStatusAndMoveToParent(NodeStatus.WIN.toString());
     }
 
     private void updateBranchStatusFirstCall() throws IllegalStatusException
@@ -162,10 +151,21 @@ public class Tree{
                     "should be changed before calling 'UpdateBranchStatus' method.");
         }
 
-        if(currentNode.getParent()!=null)
+        gotoParentAndUpdateBranch();
+    }
+    private void gotoParentAndUpdateBranch() throws IllegalStatusException {
+        if(currentNode.getParent()==null)
         {
-            currentNode = currentNode.getParent();
-            updateBranchStatus(false);
+            return;
+        }
+        currentNode = currentNode.getParent();
+        updateBranchStatus(false);
+    }
+
+    private void updateStatusAndMoveToParent(String status) throws IllegalStatusException{
+        if(currentNode.getStatus()==NodeStatus.UNKNOWN) {
+            currentNode.setStatus(NodeStatus.valueOf(status));
+            gotoParentAndUpdateBranch();
         }
     }
 }

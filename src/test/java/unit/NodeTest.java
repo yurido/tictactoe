@@ -66,4 +66,18 @@ public class NodeTest {
         Node node = new Node(2);
         node.getChild(10);
     }
+
+    @Test
+    public void toStringLeaf() throws ChildrenCollectionException {
+        Node node = new Node(2);
+        Node child = new Node(1);
+        node.addChild(child);
+        assertTrue(child.getParent() != null);
+        child.toString();
+
+        assertTrue(child.getWeight() == 0);
+        child.setWeight(1);
+        assertTrue(child.getWeight() == 1);
+    }
+
 }

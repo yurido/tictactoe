@@ -1,8 +1,6 @@
 package unit;
 
 import static org.junit.Assert.*;
-
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -115,7 +113,7 @@ public class TreeTest {
 
         assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.UNKNOWN);
         assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
-        assertTrue(tree.getCurrentNode().getLevel()==0);
+        assertTrue(tree.getCurrentNode().getLevel() == 0);
 
         tree.moveToRoot();
         tree.addNode(1);
@@ -160,4 +158,50 @@ public class TreeTest {
         assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
         assertTrue(tree.getCurrentNode().getLevel() == 0);
     }
+
+    @Test
+    public void updateBranchStatusWithEmptyNodes() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+        Tree tree = new Tree(2);
+        tree.addNode(0);
+        tree.moveToRoot();
+        assertTrue(tree.getCurrentNode().getMaxChildrenCapacity()>tree.getCurrentNode().getChildren().size());
+    }
+
+    @Test
+    public void updateBranchStatusDrawAndLose() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+        Tree tree = new Tree(2);
+        tree.addNode(0);
+        tree.addNode(2);
+        tree.getCurrentNode().setStatus(NodeStatus.DRAW);
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.UNKNOWN);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+
+        tree.moveToRoot();
+        tree.addNode(1);
+        tree.addNode(3);
+        tree.getCurrentNode().setStatus(NodeStatus.WIN);
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.DRAW);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+    }
+
+    @Test
+    public void updateBranchStatusUnknown() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+        Tree tree = new Tree(2);
+        tree.addNode(0);
+        tree.addNode(2);
+        tree.moveToRoot();
+
+        tree.addNode(1);
+        tree.addNode(3);
+        tree.getCurrentNode().setStatus(NodeStatus.WIN);
+        tree.updateTreeStatus();
+
+        assertTrue(tree.getCurrentNode().getStatus() == NodeStatus.UNKNOWN);
+        assertTrue(tree.getCurrentNode().equals(tree.getRoot()));
+    }
+
 }
