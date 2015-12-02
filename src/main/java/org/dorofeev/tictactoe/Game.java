@@ -1,12 +1,12 @@
-package org.tictactoe;
+package org.dorofeev.tictactoe;
 
-import org.tictactoe.exceptions.ChildrenCollectionException;
+import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
+
 import java.util.ArrayList;
 
 /**
  * @author Yury Dorofeev
  * @version 2015-09-07
- * @company Dynabyte AB
  */
 public class Game{
     private ArrayList<NodeStatus> prioritySchema;

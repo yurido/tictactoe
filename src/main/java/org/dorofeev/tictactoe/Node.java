@@ -1,6 +1,7 @@
-package org.tictactoe;
+package org.dorofeev.tictactoe;
 
-import org.tictactoe.exceptions.ChildrenCollectionException;
+import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
+
 import java.util.ArrayList;
 import java.util.UUID;
 

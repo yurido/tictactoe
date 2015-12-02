@@ -4,11 +4,11 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.tictactoe.Node;
-import org.tictactoe.NodeStatus;
+import org.dorofeev.tictactoe.Node;
+import org.dorofeev.tictactoe.NodeStatus;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.tictactoe.exceptions.ChildrenCollectionException;
+import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
 
 /**
  * @author Yury Dorofeev

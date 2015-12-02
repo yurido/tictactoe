@@ -1,8 +1,8 @@
-package org.tictactoe;
+package org.dorofeev.tictactoe;
 
-import org.tictactoe.exceptions.ChildNodeNotFoundException;
-import org.tictactoe.exceptions.ChildrenCollectionException;
-import org.tictactoe.exceptions.IllegalStatusException;
+import org.dorofeev.tictactoe.exception.ChildNodeNotFoundException;
+import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
+import org.dorofeev.tictactoe.exception.IllegalStatusException;
 
 /**
  * Tree class

@@ -6,12 +6,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.tictactoe.Node;
-import org.tictactoe.NodeStatus;
-import org.tictactoe.Tree;
-import org.tictactoe.exceptions.ChildNodeNotFoundException;
-import org.tictactoe.exceptions.ChildrenCollectionException;
-import org.tictactoe.exceptions.IllegalStatusException;
+import org.dorofeev.tictactoe.Node;
+import org.dorofeev.tictactoe.NodeStatus;
+import org.dorofeev.tictactoe.Tree;
+import org.dorofeev.tictactoe.exception.ChildNodeNotFoundException;
+import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
+import org.dorofeev.tictactoe.exception.IllegalStatusException;
 
 /**
  * @author Yury Dorofeev

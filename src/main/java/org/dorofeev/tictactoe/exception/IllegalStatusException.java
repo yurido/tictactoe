@@ -1,10 +1,9 @@
-package org.tictactoe.exceptions;
+package org.dorofeev.tictactoe.exception;
 
 /**
  * IllegalStatusException
  * @author Yury Dorofeev
  * @version 2015-09-29
- * @company Dynabyte AB
  */
 public class IllegalStatusException extends Exception {
     public IllegalStatusException(String message)
