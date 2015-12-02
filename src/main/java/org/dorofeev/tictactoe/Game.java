@@ -1,48 +1,43 @@
 package org.dorofeev.tictactoe;
 
-import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
-
+import org.dorofeev.tictactoe.exception.TicTacToeException;
 import java.util.ArrayList;
 
 /**
+ * Game class
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
 public class Game{
-    private ArrayList<NodeStatus> prioritySchema;
+    private ArrayList<NodeStatus> nodeStatusPrioritySchema;
     private Tree tree;
-    private int regime =0;
-    private ArrayList<Figure> gameGrid;
+    private GameRegime gameRegime;
+    private ArrayList<Figure> gameBoard;
 
     /**
      * Method starts new game instance. Builds new tree or continue building the
      * previous one
-     * @param field_size the size of the the game board
-     * @param regime 1 - man vs computer, 2 - computer vs computer
-     * @throws Exception
+     * @param boarSize the size of the the game board
+     * @param gameRegime
      */
-    public void startNewGame(int field_size, int regime){
+    public void startNewGame(GameBoardSize boarSize, GameRegime gameRegime) throws TicTacToeException{
 
-        // new tree
-        if(tree ==null){
-            tree = new Tree(field_size);
+        if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boarSize.getValue())
+        {
+            tree = new Tree(boarSize.getValue());
         }
-        else{
-            // if new grid size build new tree
-            if(tree.getRoot().getMaxChildrenCapacity()!=field_size)
-                tree = new Tree(field_size);
-            else
-                tree.moveToRoot();
+        else
+        {
+            tree.moveToRoot();
         }
 
-        // set up game regime
-        if(this.regime !=regime){
-            InitPrioritySchema(regime);
+        if(gameRegime != gameRegime)
+        {
+            initNodeStatusPrioritySchema(gameRegime);
         }
-        this.regime = regime;
+        this.gameRegime = gameRegime;
 
-        // init game grid
-        InitGameGrid(field_size);
+        initGameBoard(boarSize.getValue());
     }
 
     /**
@@ -52,18 +47,18 @@ public class Game{
      * @return 0-0 win, 1-X win, 2-draw, -1-game is not over
      * @throws Exception if container is already occupied
      */
-    public int registerStep(int position, Figure figure) throws ChildrenCollectionException {
+    public int makeNewMove(int position, Figure figure) throws TicTacToeException {
 
-        if(gameGrid.get(position)==figure) {
-            gameGrid.set(position, figure);
+        if(gameBoard.get(position)!=Figure.EMPTY){
+            throw new TicTacToeException("Position "+position+" on the game board is already ocupied");
+        }
 
-            // add new node to the tree
-            Node Node = tree.findChildNodeWithGivenPosition(position);
-            if (Node == null) {
-                // add new node to the tree
-                tree.addNode(position);
-            }
-        } // position is empty
+        gameBoard.set(position, figure);
+        Node Node = tree.findChildNodeWithGivenPosition(position);
+        if (Node == null) {
+            tree.addNode(position);
+        }
+
 
         // check if a game is over
         return CheckGameOver();
@@ -81,7 +76,7 @@ public class Game{
         int gridSize = tree.getRoot().getMaxChildrenCapacity();
         int index = 0;
         boolean match = false;
-        Figure prevFigure = Figure.UNKNOWN;
+        Figure prevFigure = Figure.EMPTY;
         int whoWin = -1;
 
         // check horizont (go through the first line)
@@ -92,16 +87,16 @@ public class Game{
 
                 // take the slot index
                 index = i + (gridSize-gridSQRT*j);
-                if(this.gameGrid.get(index)== Figure.UNKNOWN){
+                if(this.gameBoard.get(index)== Figure.EMPTY){
 
                     // dont need to search
-                    prevFigure = Figure.UNKNOWN;
+                    prevFigure = Figure.EMPTY;
                     match = false;
                     break;
                 }
 
                 if(j==1)
-                    prevFigure = gameGrid.get(index); // take the first figure on column
+                    prevFigure = gameBoard.get(index); // take the first figure on column
                 else{
                     // take the slot value (0 or X)
                     match = ifFigureMatch(prevFigure, index);
@@ -116,7 +111,7 @@ public class Game{
 
         } // for horizont
 
-        prevFigure = Figure.UNKNOWN;
+        prevFigure = Figure.EMPTY;
         match = false;
 
         // check vertical (go through the first column)
@@ -126,16 +121,16 @@ public class Game{
             for(int j=0; j<gridSQRT; j++){
 
                 index=i+j;
-                if(gameGrid.get(index)== Figure.UNKNOWN){
+                if(gameBoard.get(index)== Figure.EMPTY){
 
                     // don't need to analize
-                    prevFigure = Figure.UNKNOWN;
+                    prevFigure = Figure.EMPTY;
                     match = false;
                     break;
                 }
 
                 if(j==0)
-                    prevFigure= gameGrid.get(index); // take the first figure
+                    prevFigure= gameBoard.get(index); // take the first figure
                 else{
                     // take the slot value (0 or X)
                     match = ifFigureMatch(prevFigure, index);
@@ -150,7 +145,7 @@ public class Game{
 
         } // for vertical
 
-        prevFigure = Figure.UNKNOWN;
+        prevFigure = Figure.EMPTY;
         match=false;
 
         // check left cross line (from the upper left corner to the bottom right one)
@@ -160,15 +155,15 @@ public class Game{
             // 6 7 8     8 9 10 11
             //           12 13 14 15
             index=i;
-            if(gameGrid.get(index)== Figure.UNKNOWN){
+            if(gameBoard.get(index)== Figure.EMPTY){
                 // don't need to analize
-                prevFigure = Figure.UNKNOWN;
+                prevFigure = Figure.EMPTY;
                 match=false;
                 break;
             }
 
             if(index==0)
-                prevFigure= gameGrid.get(index); // take the first figure
+                prevFigure= gameBoard.get(index); // take the first figure
             else{
                 // take the slot value (0 or X)
                 match = ifFigureMatch(prevFigure, index);
@@ -182,21 +177,21 @@ public class Game{
         whoWin = whoWin(match, prevFigure);
         if(whoWin>-1) return whoWin;
 
-        prevFigure = Figure.UNKNOWN;
+        prevFigure = Figure.EMPTY;
         match=false;
 
         // check right cross line (from the upper right corner to the bottom left one)
         for(int i=gridSize-gridSQRT; i>gridSQRT-1; i-=(gridSQRT-1)){
 
             index=i;
-            if(gameGrid.get(index)== Figure.UNKNOWN){
+            if(gameBoard.get(index)== Figure.EMPTY){
                 // don't need to analize
-                prevFigure = Figure.UNKNOWN;
+                prevFigure = Figure.EMPTY;
                 match=false;
                 break;
             }
             if(index==(gridSize-gridSQRT))
-                prevFigure= gameGrid.get(index); // take the first figure
+                prevFigure= gameBoard.get(index); // take the first figure
             else{
                 // take the slot value (0 or X)
                 match = ifFigureMatch(prevFigure, index);
@@ -210,8 +205,8 @@ public class Game{
         if(whoWin>-1) return whoWin;
 
         // draw?
-        for(Figure i : gameGrid){
-            if(i== Figure.UNKNOWN) return -1; // game is not over!
+        for(Figure i : gameBoard){
+            if(i== Figure.EMPTY) return -1; // game is not over!
         }
 
         return -2; // draw
@@ -225,7 +220,7 @@ public class Game{
      */
     private boolean ifFigureMatch(Figure figure, int index){
         // take the slot value (0 or X)
-        return gameGrid.get(index) == figure;
+        return gameBoard.get(index) == figure;
     }
 
     /**
@@ -246,31 +241,23 @@ public class Game{
         return -1;
     }
     /**
-     * Method initializes game field
-     * @param gridSize size of the game grid
-     * @throws IllegalArgumentException if field size is not 9, 16, 25, 36, 42, 64, 81
+     * Method initializes game board
+     * @param boardSize size of the game grid
      */
-    private void InitGameGrid(int gridSize) throws IllegalArgumentException{
-
-        int val = (int)Math.sqrt(gridSize);
-        if(val!=3&&val!=4&&val!=5&&val!=6&&val!=7&&val!=8){
-            throw new IllegalArgumentException("Field size should be 9, 16, 25, 36, 42, 64, 81");
-        }
-
-        // init grid
-        this.gameGrid = new ArrayList<Figure>(gridSize);
-        for(int i=0; i<gridSize; i++){
-            gameGrid.add(i, Figure.UNKNOWN);
+    private void initGameBoard(int boardSize){
+        gameBoard = new ArrayList<Figure>(boardSize);
+        for(int i=0; i<boardSize; i++){
+            gameBoard.add(i, Figure.UNKNOWN);
         }
     }
     /**
      * Sets new priority schema
-     * @param schema 1-Battle, 2-study regime
+     * @param schema 1-Battle, 2-study gameRegime
      * @throws Exception if schema has another value
      */
     private void ChangePrioritySchema(int schema) throws IllegalArgumentException{
         if(schema>=1 && schema<=2)
-            InitPrioritySchema(schema);
+            initNodeStatusPrioritySchema(schema);
         else
             throw new IllegalArgumentException("Priority schema value shall be 1 or 2");
     }
@@ -283,7 +270,7 @@ public class Game{
     private Node FindBestNode() throws Exception{
         Node CurrentNode = tree.getCurrentNode();
 
-        for(NodeStatus SchemaStatus : prioritySchema){
+        for(NodeStatus SchemaStatus : nodeStatusPrioritySchema){
 
             // new node ?
             if(SchemaStatus==NodeStatus.NEW_NODE){
@@ -327,34 +314,34 @@ public class Game{
     /**
      * Initialization of priority schema. Schema defines which status should be
      * chosen to make new step in the game
-     * @param schema 1 - for the real battle, 2 - for the education regime
+     * @param regime
      */
-    private void InitPrioritySchema(int schema){
+    private void initNodeStatusPrioritySchema(GameRegime regime){
 
         // |high|normal |low|
         // |----|-------|---|
         // |  0 |1|2|3  | 4 | index
 
-        if(schema==1){
-            prioritySchema = new ArrayList<NodeStatus>(5);
+        if(regime==GameRegime.FIGHT){
+            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(5);
 
             // high priority
-            prioritySchema.add(NodeStatus.WIN);
+            nodeStatusPrioritySchema.add(NodeStatus.WIN);
             // normal priority
-            prioritySchema.add(NodeStatus.UNKNOWN);
-            prioritySchema.add(NodeStatus.NEW_NODE);
-            prioritySchema.add(NodeStatus.DRAW);
+            nodeStatusPrioritySchema.add(NodeStatus.UNKNOWN);
+            nodeStatusPrioritySchema.add(NodeStatus.NEW_NODE);
+            nodeStatusPrioritySchema.add(NodeStatus.DRAW);
             // low priority
-            prioritySchema.add(NodeStatus.DRAW);
+            nodeStatusPrioritySchema.add(NodeStatus.DRAW);
         }
         else{
-            prioritySchema = new ArrayList<NodeStatus>(2);
+            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(2);
 
             // high priority
-            prioritySchema.add(NodeStatus.UNKNOWN);
+            nodeStatusPrioritySchema.add(NodeStatus.UNKNOWN);
             // normal priority
-            prioritySchema.add(NodeStatus.NEW_NODE);
-            // all others don't matter
+            nodeStatusPrioritySchema.add(NodeStatus.NEW_NODE);
+            // all others, doesn't matter
         }
     }
 }

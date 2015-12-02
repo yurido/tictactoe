@@ -1,4 +1,4 @@
-package unit;
+package org.dorofeev.tictactoe;
 
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;

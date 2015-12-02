@@ -1,11 +1,11 @@
 package org.dorofeev.tictactoe;
 
-import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
-
+import org.dorofeev.tictactoe.exception.TicTacToeException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 /**
+ * Node
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
@@ -19,12 +19,12 @@ public class Node{
     private int level=0;    // the node level in the node tree
     private int maxChildrenCapacity=0;
 
-    public Node(int size) throws IllegalArgumentException
+    public Node(int size) throws TicTacToeException
     {
         parent = null;
         if(size<0)
         {
-            throw new IllegalArgumentException("children collection size is < 0");
+            throw new TicTacToeException("children collection size is < 0");
         }
         children = new ArrayList<Node>(size);
         UID = UUID.randomUUID();
@@ -42,11 +42,11 @@ public class Node{
     {
         return parent;
     }
-    public void addChild(Node node) throws ChildrenCollectionException
+    public void addChild(Node node) throws TicTacToeException
     {
         if(children!=null && children.size() >= getMaxChildrenCapacity())
         {
-            throw new ChildrenCollectionException("The children collection is full. You can not add more nodes!");
+            throw new TicTacToeException("The children collection is full. You can not add more nodes!");
         }
         node.setParent(this);
         node.setLevel(getLevel() + 1);

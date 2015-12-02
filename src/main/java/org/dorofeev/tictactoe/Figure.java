@@ -7,5 +7,5 @@ package org.dorofeev.tictactoe;
 public enum Figure {
     X,
     O,
-    UNKNOWN
+    EMPTY
 }

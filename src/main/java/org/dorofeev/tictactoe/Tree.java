@@ -1,8 +1,6 @@
 package org.dorofeev.tictactoe;
 
-import org.dorofeev.tictactoe.exception.ChildNodeNotFoundException;
-import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
-import org.dorofeev.tictactoe.exception.IllegalStatusException;
+import org.dorofeev.tictactoe.exception.TicTacToeException;
 
 /**
  * Tree class
@@ -13,8 +11,7 @@ public class Tree{
     private Node root;
     private Node currentNode;
 
-    public Tree(int rootSize)
-    {
+    public Tree(int rootSize) throws TicTacToeException {
         root = new Node(rootSize);
         currentNode = root;
     }
@@ -22,10 +19,9 @@ public class Tree{
     /**
      * Method adds new child node to the current node and moves current node to the new node
      * @param position position on the board
-     * @throws ChildrenCollectionException
+     * @throws TicTacToeException
      */
-    public void addNode(int position) throws ChildrenCollectionException
-    {
+    public void addNode(int position) throws TicTacToeException {
         Node node = new Node(currentNode.getMaxChildrenCapacity()-1);
         node.setPosition(position);
         currentNode.addChild(node);
@@ -64,7 +60,7 @@ public class Tree{
     /**
      * Moves current pointer to the given child node
      */
-    public void moveToChild(Node node) throws ChildNodeNotFoundException
+    public void moveToChild(Node node) throws TicTacToeException
     {
         for(Node child : currentNode.getChildren())
         {
@@ -75,7 +71,7 @@ public class Tree{
             }
         }
 
-        throw new ChildNodeNotFoundException("Given child node is not found. Node: " + node.toString());
+        throw new TicTacToeException("Given child node is not found. Node: " + node.toString());
     }
     public Node getCurrentNode()
     {
@@ -86,11 +82,11 @@ public class Tree{
      * root). Call this method when the game is over. Update current node status
      * before calling this method.
      */
-    public void updateTreeStatus() throws IllegalStatusException
+    public void updateTreeStatus() throws TicTacToeException
     {
         updateBranchStatus(true);
     }
-    private void updateBranchStatus(boolean isFirstCall) throws IllegalStatusException
+    private void updateBranchStatus(boolean isFirstCall) throws TicTacToeException
     {
         int losers=0;
         int draws=0;
@@ -127,14 +123,14 @@ public class Tree{
         updateBranchStatusLose(losers);
         updateBranchStatusDraw(draws, allChildrenHaveStatus);
     }
-    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws IllegalStatusException {
+    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws TicTacToeException {
         if(draws == currentNode.getMaxChildrenCapacity() || allChildrenHaveStatus)
         {
             updateStatusAndMoveToParent(NodeStatus.DRAW.toString());
         }
     }
 
-    private void updateBranchStatusLose(int losers) throws IllegalStatusException {
+    private void updateBranchStatusLose(int losers) throws TicTacToeException {
         if(losers != currentNode.getMaxChildrenCapacity())
         {
             return;
@@ -143,17 +139,17 @@ public class Tree{
         updateStatusAndMoveToParent(NodeStatus.WIN.toString());
     }
 
-    private void updateBranchStatusFirstCall() throws IllegalStatusException
+    private void updateBranchStatusFirstCall() throws TicTacToeException
     {
         if(currentNode.getStatus()== NodeStatus.UNKNOWN)
         {
-            throw new IllegalStatusException("The node status has 'unknown' value. It " +
+            throw new TicTacToeException("The node status has 'unknown' value. It " +
                     "should be changed before calling 'UpdateBranchStatus' method.");
         }
 
         gotoParentAndUpdateBranch();
     }
-    private void gotoParentAndUpdateBranch() throws IllegalStatusException {
+    private void gotoParentAndUpdateBranch() throws TicTacToeException{
         if(currentNode.getParent()==null)
         {
             return;
@@ -162,7 +158,7 @@ public class Tree{
         updateBranchStatus(false);
     }
 
-    private void updateStatusAndMoveToParent(String status) throws IllegalStatusException{
+    private void updateStatusAndMoveToParent(String status) throws TicTacToeException{
         if(currentNode.getStatus()==NodeStatus.UNKNOWN) {
             currentNode.setStatus(NodeStatus.valueOf(status));
             gotoParentAndUpdateBranch();

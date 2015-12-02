@@ -1,4 +1,4 @@
-package unit;
+package org.dorofeev.tictactoe;
 
 import static org.junit.Assert.*;
 import org.junit.Rule;
