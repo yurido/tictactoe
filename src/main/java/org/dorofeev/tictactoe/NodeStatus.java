@@ -1,6 +1,7 @@
 package org.dorofeev.tictactoe;
 
 /**
+ * NodeStatus
  * @author Yury Dorofeev
  * @version 2015-09-29
   */

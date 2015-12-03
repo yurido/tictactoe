@@ -1,5 +1,6 @@
 package org.dorofeev.tictactoe;
 
+import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
 
 /**
@@ -17,8 +18,8 @@ public class Tree{
     }
 
     /**
-     * Method adds new child node to the current node and moves current node to the new node
-     * @param position position on the board
+     * Method adds new Child node to the Current node and moves Current node to the new one
+     * @param position position on the game board
      * @throws TicTacToeException
      */
     public void addNode(int position) throws TicTacToeException {
@@ -42,11 +43,8 @@ public class Tree{
         }
         currentNode = currentNode.getParent();
     }
-    /**
-     * Method finds the child Node with the given position on the game board
-     * @return Node or null if position is empty
-     */
-    public Node findChildNodeWithGivenPosition(int position)
+
+    public Node findChildNodeWithGivenPosition(int position) throws NodeNotFoundException
     {
         for(Node node : currentNode.getChildren())
         {
@@ -55,28 +53,22 @@ public class Tree{
                 return node;
             }
         }
-        return null;
+        throw new NodeNotFoundException("Node with position "+position+" is not found");
     }
-    /**
-     * Moves current pointer to the given child node
-     */
+
     public void moveToChild(Node node) throws TicTacToeException
     {
-        for(Node child : currentNode.getChildren())
-        {
-            if(node.equals(child))
-            {
-                currentNode = node;
-                return;
-            }
+        if(!currentNode.getChildren().contains(node)){
+            throw new TicTacToeException("Given child node is not found. Node: " + node.toString());
         }
-
-        throw new TicTacToeException("Given child node is not found. Node: " + node.toString());
+        currentNode = node;
     }
+
     public Node getCurrentNode()
     {
         return currentNode;
     }
+
     /**
      * Method updates status of all the nodes in the current branch (up to the
      * root). Call this method when the game is over. Update current node status
@@ -86,6 +78,7 @@ public class Tree{
     {
         updateBranchStatus(true);
     }
+
     private void updateBranchStatus(boolean isFirstCall) throws TicTacToeException
     {
         int losers=0;
@@ -98,7 +91,6 @@ public class Tree{
             return;
         }
 
-        // check all the children
         for(Node node : currentNode.getChildren())
         {
             switch (node.getStatus())
@@ -135,7 +127,7 @@ public class Tree{
         {
             return;
         }
-        // if ALL children are losers, parent win
+        // if ALL children are losers then parent wins
         updateStatusAndMoveToParent(NodeStatus.WIN.toString());
     }
 
@@ -143,8 +135,8 @@ public class Tree{
     {
         if(currentNode.getStatus()== NodeStatus.UNKNOWN)
         {
-            throw new TicTacToeException("The node status has 'unknown' value. It " +
-                    "should be changed before calling 'UpdateBranchStatus' method.");
+            throw new TicTacToeException("The node status is 'unknown'. It " +
+                    "should be changed before calling 'UpdateBranchStatus' method");
         }
 
         gotoParentAndUpdateBranch();

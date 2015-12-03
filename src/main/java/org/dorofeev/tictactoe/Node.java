@@ -12,10 +12,10 @@ import java.util.UUID;
 public class Node{
     private Node parent=null;
     private ArrayList<Node> children=null;
-    private UUID UID; // unique id
+    private UUID UID; // unique ID
     private NodeStatus status=null;
     private int position=0; // position on the game board
-    private int weight=0;   // optimisation param
+    private int weight=0;   // optimisation parameter
     private int level=0;    // the node level in the node tree
     private int maxChildrenCapacity=0;
 
