@@ -1,17 +1,14 @@
 package org.dorofeev.tictactoe;
 
 import static org.junit.Assert.*;
+
+import org.dorofeev.tictactoe.exception.NodeNotFoundException;
+import org.dorofeev.tictactoe.exception.TicTacToeException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.dorofeev.tictactoe.Node;
-import org.dorofeev.tictactoe.NodeStatus;
-import org.dorofeev.tictactoe.Tree;
-import org.dorofeev.tictactoe.exception.ChildNodeNotFoundException;
-import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
-import org.dorofeev.tictactoe.exception.IllegalStatusException;
 
 /**
  * @author Yury Dorofeev
@@ -23,7 +20,7 @@ public class TreeTest {
     public ExpectedException expectException = ExpectedException.none();
 
     @Test
-    public void create()
+    public void create() throws TicTacToeException
     {
         Tree tree = new Tree(2);
         assertTrue(tree.getRoot()!=null);
@@ -33,7 +30,7 @@ public class TreeTest {
     }
 
     @Test
-    public void addNode() throws ChildrenCollectionException {
+    public void addNode() throws TicTacToeException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         assertTrue(tree.getRoot() != tree.getCurrentNode());
@@ -41,7 +38,7 @@ public class TreeTest {
     }
 
     @Test
-    public void moveToRoot() throws ChildrenCollectionException {
+    public void moveToRoot() throws TicTacToeException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToRoot();
@@ -49,7 +46,7 @@ public class TreeTest {
     }
 
     @Test
-    public void moveToParent() throws ChildrenCollectionException {
+    public void moveToParent() throws TicTacToeException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
@@ -59,7 +56,7 @@ public class TreeTest {
     }
 
     @Test
-    public void findNodeWithGivenPosition() throws ChildrenCollectionException {
+    public void findNodeWithGivenPosition() throws TicTacToeException, NodeNotFoundException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
@@ -73,7 +70,7 @@ public class TreeTest {
     }
 
     @Test
-    public void moveToChild() throws ChildrenCollectionException, ChildNodeNotFoundException {
+    public void moveToChild() throws TicTacToeException, NodeNotFoundException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
@@ -84,25 +81,26 @@ public class TreeTest {
         assertTrue(tree.getCurrentNode().equals(node));
         tree.moveToParent();
         node = new Node(0);
-        expectException.expect(ChildNodeNotFoundException.class);
+        expectException.expect(NodeNotFoundException.class);
         expectException.expectMessage("Given child node is not found");
         tree.moveToChild(node);
     }
 
     @Test
-    public void updateBranchStatusIllegalStatusException() throws ChildrenCollectionException, IllegalStatusException {
+    public void updateBranchStatusIllegalStatusException() throws TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
         tree.addNode(1);
-        expectException.expect(IllegalStatusException.class);
-        expectException.expectMessage("The node status has 'unknown' value. It " +
+        expectException.expect(TicTacToeException.class);
+        expectException.expectMessage("The node status is 'unknown'. It " +
                 "should be changed before calling 'UpdateBranchStatus' method.");
+
         tree.updateTreeStatus();
     }
 
     @Test
-    public void updateBranchStatusWinTwoIterations() throws ChildrenCollectionException, IllegalStatusException {
+    public void updateBranchStatusWinTwoIterations() throws TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -129,7 +127,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusLoseOneIteration() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+    public void updateBranchStatusLoseOneIteration() throws TicTacToeException, NodeNotFoundException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -160,7 +158,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusWithEmptyNodes() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+    public void updateBranchStatusWithEmptyNodes() throws TicTacToeException, NodeNotFoundException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToRoot();
@@ -168,7 +166,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusDrawAndLose() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+    public void updateBranchStatusDrawAndLose() throws TicTacToeException, NodeNotFoundException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -189,7 +187,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusUnknown() throws ChildrenCollectionException, IllegalStatusException, ChildNodeNotFoundException {
+    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);

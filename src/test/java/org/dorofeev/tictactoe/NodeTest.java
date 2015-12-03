@@ -1,14 +1,12 @@
 package org.dorofeev.tictactoe;
 
+import org.dorofeev.tictactoe.exception.TicTacToeException;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.dorofeev.tictactoe.Node;
-import org.dorofeev.tictactoe.NodeStatus;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.dorofeev.tictactoe.exception.ChildrenCollectionException;
 
 /**
  * @author Yury Dorofeev
@@ -20,14 +18,16 @@ public class NodeTest {
     public ExpectedException expectException = ExpectedException.none();
 
     @Test
-    public void collectionSizeError()
+    public void collectionSizeError() throws TicTacToeException
     {
-        expectException.expect(IllegalArgumentException.class);
+        expectException.expect(TicTacToeException.class);
         expectException.expectMessage("children collection size is < 0");
+
         new Node(-1);
     }
+
     @Test
-    public void testFails() throws ChildrenCollectionException {
+    public void testFails() throws TicTacToeException{
         Node Root = new Node(3);
 
         assertEquals(null, Root.getParent());
@@ -46,13 +46,13 @@ public class NodeTest {
 
         Node N = Root.getChild(0);
         assertEquals(NodeStatus.UNKNOWN, N.getStatus());
-        // System.out.println(Root.toString());
     }
     @Test
-    public void childrenCollectionIsFullError() throws ChildrenCollectionException
+    public void childrenCollectionIsFullError() throws TicTacToeException
     {
-        expectException.expect(ChildrenCollectionException.class);
+        expectException.expect(TicTacToeException.class);
         expectException.expectMessage("The children collection is full. You can not add more nodes!");
+
         Node node = new Node(2);
         node.addChild(new Node(1));
         node.addChild(new Node(1));
@@ -60,15 +60,16 @@ public class NodeTest {
         node.addChild(new Node(1));
         node.addChild(new Node(1));
     }
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void getChildError()
+    @Test
+    public void getChildError()throws TicTacToeException
     {
+        expectException.expect(TicTacToeException.class);
         Node node = new Node(2);
         node.getChild(10);
     }
 
     @Test
-    public void toStringLeaf() throws ChildrenCollectionException {
+    public void toStringLeaf() throws TicTacToeException {
         Node node = new Node(2);
         Node child = new Node(1);
         node.addChild(child);
