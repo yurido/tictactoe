@@ -34,10 +34,7 @@ public class Game{
             tree.moveToRoot();
         }
 
-        if(gameRegime != gameRegime)
-        {
-            initNodeStatusPrioritySchema(gameRegime);
-        }
+        initNodeStatusPrioritySchema(gameRegime);
         this.gameRegime = gameRegime;
 
         initGameBoard(boarSize.getValue());
@@ -80,11 +77,151 @@ public class Game{
     }
 
     public GameStatus checkIfGameIsOver(){
-        // check rows
+        if (checkRows()== GameStatus.WIN){
+            return GameStatus.WIN;
+        }
 
-        // check columns
+        if (checkColumns()== GameStatus.WIN){
+            return GameStatus.WIN;
+        }
 
-        // check diagonal
+        if (checkDiagonals()== GameStatus.WIN){
+            return GameStatus.WIN;
+        }
+
+        for(GameBoardNode gameBoardNode: gameBoard) {
+            if(gameBoardNode.getFigure()==GameFigure.EMPTY){
+                return GameStatus.CONTINUE;
+            }
+        }
+
+        return GameStatus.DRAW;
+    }
+
+    private GameStatus checkDiagonals(){
+
+        if(checkLeftDiagonal()==GameStatus.WIN){
+            return GameStatus.WIN;
+        }
+        if(checkRightDiagonal()==GameStatus.WIN){
+            return GameStatus.WIN;
+        }
+        return GameStatus.CONTINUE;
+    }
+
+    private GameStatus checkRightDiagonal(){
+        int boardSize = tree.getRoot().getMaxChildrenCapacity();
+        int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
+        GameFigure figure = GameFigure.EMPTY;
+        boolean match = false;
+
+        for(int i=boardSize-boardSQRT; i>boardSQRT-1; i-=(boardSQRT-1)){
+            if(gameBoard.get(i).getFigure()== GameFigure.EMPTY){
+                return GameStatus.CONTINUE;
+            }
+            if(i==0){
+                figure = gameBoard.get(i).getFigure();
+            }else{
+                match = ifFigureMatch(figure, i);
+                if(!match){
+                    return GameStatus.CONTINUE;
+                }
+            }
+        }
+        if(match){
+            return GameStatus.WIN;
+        }
+        return GameStatus.CONTINUE;
+    }
+
+    private GameStatus checkLeftDiagonal(){
+        int boardSize = tree.getRoot().getMaxChildrenCapacity();
+        int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
+        GameFigure figure = GameFigure.EMPTY;
+        boolean match = false;
+
+        for(int i=0; i<boardSize; i+=boardSQRT+1){
+            if(gameBoard.get(i).getFigure()== GameFigure.EMPTY){
+                return GameStatus.CONTINUE;
+            }
+            if(i==0){
+                figure = gameBoard.get(i).getFigure();
+            }else{
+                match = ifFigureMatch(figure, i);
+                if(!match){
+                    return GameStatus.CONTINUE;
+                }
+            }
+        }
+        if(match){
+            return GameStatus.WIN;
+        }
+        return GameStatus.CONTINUE;
+    }
+
+    private GameStatus checkRows() {
+        int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
+        int start=0;
+        int index=0;
+        GameFigure figure = GameFigure.EMPTY;
+        boolean match = false;
+
+        for(int i = 0; i<boardSQRT; i++ ){
+            for(int j=0; j<boardSQRT; j++ ){
+                index = start + j;
+
+                if(gameBoard.get(index).getFigure()== GameFigure.EMPTY){
+                    break;
+                }
+                if(j==0){
+                    figure = gameBoard.get(index).getFigure();
+                }else{
+                    match = ifFigureMatch(figure, index);
+                    if(!match){
+                        break;
+                    }
+                }
+            }
+            if(match){
+                return GameStatus.WIN;
+            }
+            start = start + boardSQRT;
+        }
+        return GameStatus.CONTINUE;
+    }
+
+    private GameStatus checkColumns(){
+        int boardSize = tree.getRoot().getMaxChildrenCapacity();
+        int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
+        int index=0;
+        GameFigure figure = GameFigure.EMPTY;
+        boolean match = false;
+
+        for(int i=0; i<boardSize-2; i+=boardSQRT){
+            for(int j=0; j<boardSQRT; j++){
+                index = i+j;
+
+                if(gameBoard.get(index).getFigure()== GameFigure.EMPTY){
+                    break;
+                }
+                if(j==0){
+                    figure = gameBoard.get(index).getFigure();
+                }else{
+                    match = ifFigureMatch(figure, index);
+                    if(!match){
+                        break;
+                    }
+                }
+            }
+            if(match){
+                return GameStatus.WIN;
+            }
+        }
+        return GameStatus.CONTINUE;
+    }
+
+    private boolean ifFigureMatch(GameFigure figure, int index){
+        return gameBoard.get(index).getFigure() == figure;
     }
 
     private int findBoardPosition() throws TicTacToeException{
