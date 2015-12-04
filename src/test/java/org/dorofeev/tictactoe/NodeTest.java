@@ -63,8 +63,10 @@ public class NodeTest {
     @Test
     public void getChildError()throws TicTacToeException
     {
-        expectException.expect(TicTacToeException.class);
         Node node = new Node(2);
+        expectException.expect(TicTacToeException.class);
+        expectException.expectMessage("Child node with index 10 does not exist");
+
         node.getChild(10);
     }
 

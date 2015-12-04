@@ -2,6 +2,7 @@ package org.dorofeev.tictactoe;
 
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
+import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
 
 /**
  * Tree class
@@ -56,10 +57,10 @@ public class Tree{
         throw new NodeNotFoundException("Node with position "+position+" is not found");
     }
 
-    public void moveToChild(Node node) throws TicTacToeException
+    public void moveToChild(Node node) throws NodeNotFoundException
     {
         if(!currentNode.getChildren().contains(node)){
-            throw new TicTacToeException("Given child node is not found. Node: " + node.toString());
+            throw new NodeNotFoundException("Given child node is not found. Node: " + node.toString());
         }
         currentNode = node;
     }
@@ -74,12 +75,12 @@ public class Tree{
      * root). Call this method when the game is over. Update current node status
      * before calling this method.
      */
-    public void updateTreeStatus() throws TicTacToeException
+    public void updateTreeStatus() throws UpdateBrunchStatusException
     {
         updateBranchStatus(true);
     }
 
-    private void updateBranchStatus(boolean isFirstCall) throws TicTacToeException
+    private void updateBranchStatus(boolean isFirstCall) throws UpdateBrunchStatusException
     {
         int losers=0;
         int draws=0;
@@ -115,14 +116,14 @@ public class Tree{
         updateBranchStatusLose(losers);
         updateBranchStatusDraw(draws, allChildrenHaveStatus);
     }
-    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws TicTacToeException {
+    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws UpdateBrunchStatusException {
         if(draws == currentNode.getMaxChildrenCapacity() || allChildrenHaveStatus)
         {
             updateStatusAndMoveToParent(NodeStatus.DRAW.toString());
         }
     }
 
-    private void updateBranchStatusLose(int losers) throws TicTacToeException {
+    private void updateBranchStatusLose(int losers) throws UpdateBrunchStatusException {
         if(losers != currentNode.getMaxChildrenCapacity())
         {
             return;
@@ -131,17 +132,17 @@ public class Tree{
         updateStatusAndMoveToParent(NodeStatus.WIN.toString());
     }
 
-    private void updateBranchStatusFirstCall() throws TicTacToeException
+    private void updateBranchStatusFirstCall() throws UpdateBrunchStatusException
     {
         if(currentNode.getStatus()== NodeStatus.UNKNOWN)
         {
-            throw new TicTacToeException("The node status is 'unknown'. It " +
+            throw new UpdateBrunchStatusException("The node status is 'unknown'. It " +
                     "should be changed before calling 'UpdateBranchStatus' method");
         }
 
         gotoParentAndUpdateBranch();
     }
-    private void gotoParentAndUpdateBranch() throws TicTacToeException{
+    private void gotoParentAndUpdateBranch() throws UpdateBrunchStatusException{
         if(currentNode.getParent()==null)
         {
             return;
@@ -150,7 +151,7 @@ public class Tree{
         updateBranchStatus(false);
     }
 
-    private void updateStatusAndMoveToParent(String status) throws TicTacToeException{
+    private void updateStatusAndMoveToParent(String status) throws UpdateBrunchStatusException{
         if(currentNode.getStatus()==NodeStatus.UNKNOWN) {
             currentNode.setStatus(NodeStatus.valueOf(status));
             gotoParentAndUpdateBranch();

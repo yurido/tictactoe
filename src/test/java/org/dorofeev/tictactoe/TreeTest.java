@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
+import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -56,7 +57,7 @@ public class TreeTest {
     }
 
     @Test
-    public void findNodeWithGivenPosition() throws TicTacToeException, NodeNotFoundException {
+    public void nodeWithGivenPositionNotFound() throws TicTacToeException, NodeNotFoundException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
@@ -65,12 +66,15 @@ public class TreeTest {
         tree.moveToParent();
         Node myNode = tree.findChildNodeWithGivenPosition(1);
         assertTrue(myNode.equals(node));
-        myNode = tree.findChildNodeWithGivenPosition(2);
-        assertTrue(myNode==null);
+
+        expectException.expect(NodeNotFoundException.class);
+        expectException.expectMessage("Node with position 2 is not found");
+
+        tree.findChildNodeWithGivenPosition(2);
     }
 
     @Test
-    public void moveToChild() throws TicTacToeException, NodeNotFoundException {
+    public void nodeNotFound() throws TicTacToeException, NodeNotFoundException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
@@ -83,24 +87,24 @@ public class TreeTest {
         node = new Node(0);
         expectException.expect(NodeNotFoundException.class);
         expectException.expectMessage("Given child node is not found");
+
         tree.moveToChild(node);
     }
 
     @Test
-    public void updateBranchStatusIllegalStatusException() throws TicTacToeException{
+    public void updateBranchStatusException() throws UpdateBrunchStatusException, TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
         tree.addNode(1);
-        expectException.expect(TicTacToeException.class);
-        expectException.expectMessage("The node status is 'unknown'. It " +
-                "should be changed before calling 'UpdateBranchStatus' method.");
+        expectException.expect(UpdateBrunchStatusException.class);
+        expectException.expectMessage("The node status is 'unknown'. It should be changed before calling 'UpdateBranchStatus' method");
 
         tree.updateTreeStatus();
     }
 
     @Test
-    public void updateBranchStatusWinTwoIterations() throws TicTacToeException{
+    public void updateBranchStatusWinTwoIterations() throws UpdateBrunchStatusException, TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -127,7 +131,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusLoseOneIteration() throws TicTacToeException, NodeNotFoundException{
+    public void updateBranchStatusLoseOneIteration() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -166,7 +170,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusDrawAndLose() throws TicTacToeException, NodeNotFoundException{
+    public void updateBranchStatusDrawUnknown() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -187,7 +191,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException{
+    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);

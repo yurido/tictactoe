@@ -52,9 +52,13 @@ public class Node{
         node.setLevel(getLevel() + 1);
         children.add(node);
     }
-    public Node getChild(int index)
+    public Node getChild(int index) throws TicTacToeException
     {
-        return children.get(index);
+        try {
+            return children.get(index);
+        }catch(IndexOutOfBoundsException e){
+            throw new TicTacToeException("Child node with index " + index + " does not exist");
+        }
     }
     public UUID getUID()
     {
@@ -110,7 +114,6 @@ public class Node{
         value.append(", level=" + getLevel());
         value.append(", position=" + getPosition());
 
-        // parent
         if(getParent()!=null)
         {
             value.append(", parent=" + getParent().getUID());
@@ -120,7 +123,6 @@ public class Node{
             value.append(", parent=null");
         }
 
-        // children
         String childrenNumber = "0";
         if(children!=null)
         {

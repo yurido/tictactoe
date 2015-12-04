@@ -3,6 +3,8 @@ package org.dorofeev.tictactoe;
 import org.dorofeev.tictactoe.exception.CreateNewNodeException;
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
+import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
+
 import java.util.ArrayList;
 
 /**
@@ -71,7 +73,7 @@ public class Game{
         return position;
     }
 
-    public void gameOver(GameStatus status) throws TicTacToeException{
+    public void gameOver(GameStatus status) throws UpdateBrunchStatusException{
         tree.getCurrentNode().setStatus(NodeStatus.valueOf(String.valueOf(status)));
         tree.updateTreeStatus();
     }
