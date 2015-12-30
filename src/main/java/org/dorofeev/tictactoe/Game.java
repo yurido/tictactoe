@@ -16,20 +16,20 @@ public class Game{
     private ArrayList<NodeStatus> nodeStatusPrioritySchema;
     private Tree tree;
     private GameRegime gameRegime;
-    private ArrayList<GameBoardNode> gameBoard;
+    private ArrayList<GameFigure> gameBoard;
 
 
     /**
      * Method starts new game instance. Builds new tree or continue building the
      * previous one
-     * @param boarSize the size of the the game board
+     * @param boardSize the size of the the game board
      * @param gameRegime
      */
-    public void startNewGame(GameBoardSize boarSize, GameRegime gameRegime) throws TicTacToeException{
+    public void startNewGame(GameBoardSize boardSize, GameRegime gameRegime) throws TicTacToeException{
 
-        if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boarSize.getValue())
+        if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boardSize.getValue())
         {
-            tree = new Tree(boarSize.getValue());
+            tree = new Tree(boardSize.getValue());
         }
         else
         {
@@ -39,7 +39,7 @@ public class Game{
         initNodeStatusPrioritySchema(gameRegime);
         this.gameRegime = gameRegime;
 
-        initGameBoard(boarSize.getValue());
+        initGameBoard(boardSize.getValue());
     }
 
     /**
@@ -67,7 +67,7 @@ public class Game{
             Node node=findBestNode();
             position = node.getPosition();
         }catch (CreateNewNodeException e){
-            position = findBoardPosition();
+            position = findEmptyPosition();
             tree.addNode(position);
         }
         return position;
@@ -91,8 +91,8 @@ public class Game{
             return GameStatus.WIN;
         }
 
-        for(GameBoardNode gameBoardNode: gameBoard) {
-            if(gameBoardNode.getFigure()==GameFigure.EMPTY){
+        for(GameFigure figure: gameBoard) {
+            if(figure.equals(GameFigure.EMPTY)){
                 return GameStatus.CONTINUE;
             }
         }
@@ -118,11 +118,11 @@ public class Game{
         boolean match = false;
 
         for(int i=boardSize-boardSQRT; i>boardSQRT-1; i-=(boardSQRT-1)){
-            if(gameBoard.get(i).getFigure()== GameFigure.EMPTY){
+            if(gameBoard.get(i).equals(GameFigure.EMPTY)){
                 return GameStatus.CONTINUE;
             }
             if(i==0){
-                figure = gameBoard.get(i).getFigure();
+                figure = gameBoard.get(i);
             }else{
                 match = ifFigureMatch(figure, i);
                 if(!match){
@@ -143,11 +143,11 @@ public class Game{
         boolean match = false;
 
         for(int i=0; i<boardSize; i+=boardSQRT+1){
-            if(gameBoard.get(i).getFigure()== GameFigure.EMPTY){
+            if(gameBoard.get(i).equals(GameFigure.EMPTY)){
                 return GameStatus.CONTINUE;
             }
             if(i==0){
-                figure = gameBoard.get(i).getFigure();
+                figure = gameBoard.get(i);
             }else{
                 match = ifFigureMatch(figure, i);
                 if(!match){
@@ -172,11 +172,11 @@ public class Game{
             for(int j=0; j<boardSQRT; j++ ){
                 index = start + j;
 
-                if(gameBoard.get(index).getFigure()== GameFigure.EMPTY){
+                if(gameBoard.get(index).equals(GameFigure.EMPTY)){
                     break;
                 }
                 if(j==0){
-                    figure = gameBoard.get(index).getFigure();
+                    figure = gameBoard.get(index);
                 }else{
                     match = ifFigureMatch(figure, index);
                     if(!match){
@@ -203,11 +203,11 @@ public class Game{
             for(int j=0; j<boardSQRT; j++){
                 index = i+j;
 
-                if(gameBoard.get(index).getFigure()== GameFigure.EMPTY){
+                if(gameBoard.get(index).equals(GameFigure.EMPTY)){
                     break;
                 }
                 if(j==0){
-                    figure = gameBoard.get(index).getFigure();
+                    figure = gameBoard.get(index);
                 }else{
                     match = ifFigureMatch(figure, index);
                     if(!match){
@@ -223,13 +223,13 @@ public class Game{
     }
 
     private boolean ifFigureMatch(GameFigure figure, int index){
-        return gameBoard.get(index).getFigure() == figure;
+        return gameBoard.get(index) == figure;
     }
 
-    private int findBoardPosition() throws TicTacToeException{
-        for(GameBoardNode node: gameBoard){
-            if(node.getFigure()== GameFigure.EMPTY){
-                return node.getPosition();
+    private int findEmptyPosition() throws TicTacToeException{
+        for(int i=0; i<gameBoard.size(); i++){
+            if(gameBoard.get(i).equals(GameFigure.EMPTY)){
+                return i;
             }
         }
         throw new TicTacToeException("The board game is full");
@@ -307,9 +307,9 @@ public class Game{
     }
 
     private void initGameBoard(int boardSize){
-        gameBoard = new ArrayList<GameBoardNode>(boardSize);
+        gameBoard = new ArrayList<GameFigure>(boardSize);
         for(int i=0; i<boardSize; i++){
-            gameBoard.add(i, new GameBoardNode(GameFigure.EMPTY, i));
+            gameBoard.add(i, GameFigure.EMPTY);
         }
     }
 }
