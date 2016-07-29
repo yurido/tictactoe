@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
-import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
+import org.dorofeev.tictactoe.exception.UpdateStatusException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -92,19 +92,19 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusException() throws UpdateBrunchStatusException, TicTacToeException{
+    public void updateBranchStatusException() throws UpdateStatusException, TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToParent();
         tree.addNode(1);
-        expectException.expect(UpdateBrunchStatusException.class);
+        expectException.expect(UpdateStatusException.class);
         expectException.expectMessage("The node status is 'unknown'. It should be changed before calling 'UpdateBranchStatus' method");
 
         tree.updateTreeStatus();
     }
 
     @Test
-    public void updateBranchStatusWinTwoIterations() throws UpdateBrunchStatusException, TicTacToeException{
+    public void updateBranchStatusWinTwoIterations() throws UpdateStatusException, TicTacToeException{
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -131,7 +131,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusLoseOneIteration() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
+    public void updateBranchStatusLoseOneIteration() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -170,7 +170,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusDrawUnknown() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
+    public void updateBranchStatusDrawUnknown() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -191,7 +191,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException, UpdateBrunchStatusException{
+    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);

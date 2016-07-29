@@ -3,7 +3,7 @@ package org.dorofeev.tictactoe;
 import org.dorofeev.tictactoe.exception.CreateNewNodeException;
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
-import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
+import org.dorofeev.tictactoe.exception.UpdateStatusException;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,8 @@ public class Game{
     private Tree tree;
     private GameRegime gameRegime;
     private ArrayList<GameFigure> gameBoard;
-
+    private static final int PRIORITY_SCHEMA_BATLE_SIZE = 5;
+    private static final int PRIORITY_SCHEMA_LEARNING_SIZE = 2;
 
     /**
      * Method starts new game instance. Builds new tree or continue building the
@@ -25,14 +26,12 @@ public class Game{
      * @param boardSize the size of the the game board
      * @param gameRegime
      */
-    public void startNewGame(GameBoardSize boardSize, GameRegime gameRegime) throws TicTacToeException{
+    public void startNewGame(GameBoardSize boardSize, GameRegime gameRegime) throws TicTacToeException {
 
-        if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boardSize.getValue())
-        {
+        if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boardSize.getValue()) {
             tree = new Tree(boardSize.getValue());
         }
-        else
-        {
+        else {
             tree.moveToRoot();
         }
 
@@ -44,38 +43,50 @@ public class Game{
 
     /**
      * Method registers new step
-     * @param position position on the game field (0-n)
+     * @param position position on the game board (0-n)
      * @throws TicTacToeException if container is already occupied
      */
     public void makeNewMove(int position) throws TicTacToeException {
         try {
             Node node = tree.findChildNodeWithGivenPosition(position);
             tree.moveToChild(node);
-        }catch(NodeNotFoundException e){
+        } catch(NodeNotFoundException e) {
             tree.addNode(position);
         }
     }
 
     /**
-     * Method registers new move in the current game
-     * @return new move position on the game board
+     * Method registers new step
+     * @return new position on the game board
      * @throws TicTacToeException
      */
-    public int makeNewMove() throws TicTacToeException{
-        int position=-1;
-        try{
-            Node node=findBestNode();
-            position = node.getPosition();
-        }catch (CreateNewNodeException e){
+    public int makeNewMove() throws TicTacToeException {
+        int position;
+        try {
+            position = findBestNode().getPosition();
+        } catch (CreateNewNodeException e) {
             position = findEmptyPosition();
             tree.addNode(position);
         }
         return position;
     }
 
-    public void gameOver(GameStatus status) throws UpdateBrunchStatusException{
-        tree.getCurrentNode().setStatus(NodeStatus.valueOf(String.valueOf(status)));
+    public void gameOver(GameStatus status) throws UpdateStatusException {
+        tree.getCurrentNode().setStatus(mapNodeStatus(status));
         tree.updateTreeStatus();
+    }
+
+    private NodeStatus mapNodeStatus(GameStatus gameStatus) throws UpdateStatusException {
+        switch(gameStatus) {
+            case WIN:
+                return NodeStatus.WIN;
+            case LOSE:
+                return NodeStatus.LOSE;
+            case DRAW:
+                return NodeStatus.DRAW;
+            default:
+                throw new UpdateStatusException("Invalid node status: " + gameStatus);
+        }
     }
 
     public GameStatus checkIfGameIsOver(){
@@ -238,38 +249,51 @@ public class Game{
     /**
      * Finds the best Node according to the Priority schema
      * @return Node best node
-     * @exception TicTacToeException if there are no empty slots left, CreateNewNodeException if new node should be created
+     * @exception TicTacToeException if there are no empty slots left,
+     * CreateNewNodeException if a new node should be created
      */
     private Node findBestNode() throws TicTacToeException, CreateNewNodeException{
-        Node currentNode = tree.getCurrentNode();
-
-        for(NodeStatus status : nodeStatusPrioritySchema){
-
-            if(status==NodeStatus.NEW_NODE && currentNode.getChildren().size()<currentNode.getMaxChildrenCapacity()){
-                throw new CreateNewNodeException("New node should be created");
-            }
-
-            for(Node node : currentNode.getChildren()){
-                if( node.getStatus()==status){
-                    return node;
-                }
-            }
-
+        Node node = findBestNodeWithSchema(tree.getCurrentNode());
+        if (node != null) {
+            return node;
         }
 
-        if(currentNode.getMaxChildrenCapacity()>0){
-
-            if(currentNode.getChildren().size()<currentNode.getMaxChildrenCapacity()){
-                throw new CreateNewNodeException("New node should be created");
-            }
-
-            if(currentNode.getChildren().size()>0){
-                return currentNode.getChild(0);
-            }
-
+        node = findBestNodeCheckEmptySlots(tree.getCurrentNode());
+        if (node != null) {
+            return node;
         }
 
         throw new TicTacToeException("There are no free nodes left");
+    }
+
+    private Node findBestNodeCheckEmptySlots(Node currentNode) throws CreateNewNodeException, TicTacToeException {
+        if(currentNode.getMaxChildrenCapacity() > 0) {
+
+            if(currentNode.getChildren().size() < currentNode.getMaxChildrenCapacity()) {
+                throw new CreateNewNodeException("New node should be created");
+            }
+
+            if(currentNode.getChildren().size() > 0) {
+                return currentNode.getChild(0);
+            }
+        }
+        return null;
+    }
+
+    private Node findBestNodeWithSchema(Node currentNode) throws CreateNewNodeException {
+        for(NodeStatus status : nodeStatusPrioritySchema) {
+
+            if(status == NodeStatus.NEW_NODE && currentNode.getChildren().size() < currentNode.getMaxChildrenCapacity()) {
+                throw new CreateNewNodeException("New node should be created");
+            }
+
+            for(Node node : currentNode.getChildren()) {
+                if( node.getStatus() == status) {
+                    return node;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -283,8 +307,8 @@ public class Game{
         // |----|-------|---|
         // |  0 |1|2|3  | 4 | index
 
-        if(regime==GameRegime.FIGHT){
-            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(5);
+        if(regime == GameRegime.BATLE) {
+            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(PRIORITY_SCHEMA_BATLE_SIZE);
 
             // high priority
             nodeStatusPrioritySchema.add(NodeStatus.WIN);
@@ -295,14 +319,13 @@ public class Game{
             // low priority
             nodeStatusPrioritySchema.add(NodeStatus.DRAW);
         }
-        else{
-            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(2);
-
+        else {
+            nodeStatusPrioritySchema = new ArrayList<NodeStatus>(PRIORITY_SCHEMA_LEARNING_SIZE);
             // high priority
             nodeStatusPrioritySchema.add(NodeStatus.UNKNOWN);
             // normal priority
             nodeStatusPrioritySchema.add(NodeStatus.NEW_NODE);
-            // all others, doesn't matter
+            // all other status are not important
         }
     }
 

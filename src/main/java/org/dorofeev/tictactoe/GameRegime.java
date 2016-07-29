@@ -6,6 +6,6 @@ package org.dorofeev.tictactoe;
  * @version 2015-12-02
  */
 public enum GameRegime {
-    STUDY,
-    FIGHT;
+    LEARNING,
+    BATLE;
 }

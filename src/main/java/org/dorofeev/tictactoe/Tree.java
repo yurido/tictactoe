@@ -2,7 +2,7 @@ package org.dorofeev.tictactoe;
 
 import org.dorofeev.tictactoe.exception.NodeNotFoundException;
 import org.dorofeev.tictactoe.exception.TicTacToeException;
-import org.dorofeev.tictactoe.exception.UpdateBrunchStatusException;
+import org.dorofeev.tictactoe.exception.UpdateStatusException;
 
 /**
  * Tree class
@@ -39,7 +39,7 @@ public class Tree{
     }
     public void moveToParent()
     {
-        if(currentNode.equals(root)){
+        if(currentNode.equals(root)) {
             return;
         }
         currentNode = currentNode.getParent();
@@ -47,10 +47,8 @@ public class Tree{
 
     public Node findChildNodeWithGivenPosition(int position) throws NodeNotFoundException
     {
-        for(Node node : currentNode.getChildren())
-        {
-            if(node.getPosition()==position)
-            {
+        for(Node node : currentNode.getChildren()) {
+            if(node.getPosition() == position) {
                 return node;
             }
         }
@@ -59,7 +57,7 @@ public class Tree{
 
     public void moveToChild(Node node) throws NodeNotFoundException
     {
-        if(!currentNode.getChildren().contains(node)){
+        if(!currentNode.getChildren().contains(node)) {
             throw new NodeNotFoundException("Given child node is not found. Node: " + node.toString());
         }
         currentNode = node;
@@ -73,21 +71,20 @@ public class Tree{
     /**
      * Method updates status of all the nodes in the current branch (up to the
      * root). Call this method when the game is over. Update current node status
-     * before calling this method.
+     * before calling this method!
      */
-    public void updateTreeStatus() throws UpdateBrunchStatusException
+    public void updateTreeStatus() throws UpdateStatusException
     {
         updateBranchStatus(true);
     }
 
-    private void updateBranchStatus(boolean isFirstCall) throws UpdateBrunchStatusException
+    private void updateBranchStatus(boolean isFirstCall) throws UpdateStatusException
     {
-        int losers=0;
-        int draws=0;
-        boolean allChildrenHaveStatus=(currentNode.getMaxChildrenCapacity()==currentNode.getChildren().size());
+        int losers = 0;
+        int draws = 0;
+        boolean allChildrenHaveStatus = (currentNode.getMaxChildrenCapacity() == currentNode.getChildren().size());
 
-        if(isFirstCall)
-        {
+        if(isFirstCall) {
             updateBranchStatusFirstCall();
             return;
         }
@@ -97,63 +94,61 @@ public class Tree{
             switch (node.getStatus())
             {
                 case WIN:
-                    // if a Child win then Parent loose
-                    updateStatusAndMoveToParent(NodeStatus.LOSE.toString());
+                    // if a Child wins then Parent loses
+                    updateStatusAndMoveToParent(NodeStatus.LOSE);
                     return;
                 case LOSE:
-                    // if ALL children lose then parent win
+                    // if ALL children lose then parent wins
                     losers++;
                     break;
                 case DRAW:
                     draws++;
                     break;
                 default:
-                    allChildrenHaveStatus=false;
+                    allChildrenHaveStatus = false;
                     break;
             }
-        } // for
+        }
 
         updateBranchStatusLose(losers);
         updateBranchStatusDraw(draws, allChildrenHaveStatus);
     }
-    private void updateBranchStatusDraw(int draws, boolean allChildrenHaveStatus)  throws UpdateBrunchStatusException {
-        if(draws == currentNode.getMaxChildrenCapacity() || allChildrenHaveStatus)
-        {
-            updateStatusAndMoveToParent(NodeStatus.DRAW.toString());
+    private void updateBranchStatusDraw(int numberOfDraws, boolean allChildrenHaveStatus) throws UpdateStatusException {
+        if(numberOfDraws == currentNode.getMaxChildrenCapacity() || allChildrenHaveStatus) {
+            updateStatusAndMoveToParent(NodeStatus.DRAW);
         }
     }
 
-    private void updateBranchStatusLose(int losers) throws UpdateBrunchStatusException {
-        if(losers != currentNode.getMaxChildrenCapacity())
-        {
-            return;
+    /**
+     * If ALL children are losers then parent wins
+     * @param numberOfLosers
+     * @throws UpdateStatusException
+     */
+    private void updateBranchStatusLose(int numberOfLosers) throws UpdateStatusException {
+        if(numberOfLosers == currentNode.getMaxChildrenCapacity()) {
+            updateStatusAndMoveToParent(NodeStatus.WIN);
         }
-        // if ALL children are losers then parent wins
-        updateStatusAndMoveToParent(NodeStatus.WIN.toString());
     }
 
-    private void updateBranchStatusFirstCall() throws UpdateBrunchStatusException
+    private void updateBranchStatusFirstCall() throws UpdateStatusException
     {
-        if(currentNode.getStatus()== NodeStatus.UNKNOWN)
-        {
-            throw new UpdateBrunchStatusException("The node status is 'unknown'. It " +
+        if(currentNode.getStatus() == NodeStatus.UNKNOWN) {
+            throw new UpdateStatusException("The node status is 'unknown'. It " +
                     "should be changed before calling 'UpdateBranchStatus' method");
         }
 
         gotoParentAndUpdateBranch();
     }
-    private void gotoParentAndUpdateBranch() throws UpdateBrunchStatusException{
-        if(currentNode.getParent()==null)
-        {
-            return;
+    private void gotoParentAndUpdateBranch() throws UpdateStatusException {
+        if(currentNode.getParent() != null) {
+            currentNode = currentNode.getParent();
+            updateBranchStatus(false);
         }
-        currentNode = currentNode.getParent();
-        updateBranchStatus(false);
     }
 
-    private void updateStatusAndMoveToParent(String status) throws UpdateBrunchStatusException{
-        if(currentNode.getStatus()==NodeStatus.UNKNOWN) {
-            currentNode.setStatus(NodeStatus.valueOf(status));
+    private void updateStatusAndMoveToParent(NodeStatus status) throws UpdateStatusException {
+        if(currentNode.getStatus() == NodeStatus.UNKNOWN) {
+            currentNode.setStatus(status);
             gotoParentAndUpdateBranch();
         }
     }

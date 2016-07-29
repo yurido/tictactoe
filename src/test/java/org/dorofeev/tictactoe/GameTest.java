@@ -19,6 +19,6 @@ public class GameTest {
     @Test
     public void startNewGame() throws TicTacToeException {
         Game game = new Game();
-        game.startNewGame(GameBoardSize.LARGE, GameRegime.FIGHT);
+        game.startNewGame(GameBoardSize.LARGE, GameRegime.BATLE);
     }
 }
