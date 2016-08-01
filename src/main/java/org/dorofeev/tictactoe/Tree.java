@@ -9,9 +9,12 @@ import org.dorofeev.tictactoe.exception.UpdateStatusException;
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
-public class Tree{
+public class Tree {
     private Node root;
     private Node currentNode;
+    private long numberOfNodes;
+    private long numberOfNodesPerLevel;
+    private int maxTreeDepth;
 
     public Tree(int rootSize) throws TicTacToeException {
         root = new Node(rootSize);
@@ -77,6 +80,52 @@ public class Tree{
     {
         updateBranchStatus(true);
     }
+
+    public long getNumberOfNodes() {
+        numberOfNodes = 0;
+        calcNumberOfNodes(root);
+        return numberOfNodes;
+    }
+
+    public long getNumberOfNodes(int level) {
+        numberOfNodesPerLevel = 0;
+        calcNumberOfNodesPerLevel(root, level);
+        return numberOfNodesPerLevel;
+    }
+
+
+    public int getTreeDepth() {
+        maxTreeDepth = 0;
+        calcTreeDepth(root);
+        return maxTreeDepth;
+    }
+
+    private void calcNumberOfNodesPerLevel(Node node, int level) {
+        for(Node child : node.getChildren()) {
+            if(child.getLevel() == level) {
+                numberOfNodesPerLevel ++;
+            } else {
+                calcNumberOfNodesPerLevel(child, level);
+            }
+        }
+    }
+
+    private void calcTreeDepth(Node node) {
+        for(Node child : node.getChildren()) {
+            if(child.getLevel() > maxTreeDepth) {
+                maxTreeDepth = child.getLevel();
+            }
+            calcTreeDepth(child);
+        }
+    }
+
+    private void calcNumberOfNodes(Node node) {
+        for(Node child : node.getChildren()) {
+            numberOfNodes += child.getChildren().size();
+            calcNumberOfNodes(child);
+        }
+    }
+
 
     private void updateBranchStatus(boolean isFirstCall) throws UpdateStatusException
     {

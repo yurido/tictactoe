@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
-public class Game{
+public class Game {
     private ArrayList<NodeStatus> nodeStatusPrioritySchema;
     private Tree tree;
     private GameRegime gameRegime;
@@ -61,12 +61,14 @@ public class Game{
      * @return new position on the game board
      * @throws TicTacToeException
      */
-    public int makeNewMove(GameFigure figure) throws TicTacToeException {
+    public int makeNewMove(GameFigure figure) throws TicTacToeException, NodeNotFoundException {
         int position;
         try {
-            position = findBestNode().getPosition();
+            Node node = findBestNode();
+            position = node.getPosition();
+            tree.moveToChild(node);
         } catch (CreateNewNodeException e) {
-            position = findEmptyPosition();
+            position = findEmptyPositionForNewNode();
             tree.addNode(position);
         }
         gameBoard.set(position, figure);
@@ -76,6 +78,8 @@ public class Game{
     public void gameOver(GameStatus status) throws UpdateStatusException {
         tree.getCurrentNode().setStatus(mapNodeStatus(status));
         tree.updateTreeStatus();
+        tree.moveToRoot();
+        initGameBoard(tree.getRoot().getMaxChildrenCapacity());
     }
 
     private NodeStatus mapNodeStatus(GameStatus gameStatus) throws UpdateStatusException {
@@ -91,7 +95,7 @@ public class Game{
         }
     }
 
-    public GameStatus checkIfGameIsOver() {
+    public GameStatus getGameStatus() {
         if (checkRows() == GameStatus.WIN) {
             return GameStatus.WIN;
         }
@@ -111,6 +115,10 @@ public class Game{
         }
 
         return GameStatus.DRAW;
+    }
+
+    public Tree getTree() {
+        return tree;
     }
 
     private GameStatus checkDiagonals() {
@@ -159,60 +167,62 @@ public class Game{
     }
 
     private GameStatus checkRows() {
+        int boardSize = tree.getRoot().getMaxChildrenCapacity();
         int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
-        int start=0;
-        int index=0;
+        int index;
         GameFigure figure = GameFigure.EMPTY;
         boolean match = false;
 
-        for(int i = 0; i<boardSQRT; i++ ){
-            for(int j=0; j<boardSQRT; j++ ){
-                index = start + j;
+        for(int i=0; i<boardSize; i+=boardSQRT ) {
+            for(int j=0; j<boardSQRT; j++ ) {
+                index = i + j;
 
-                if(gameBoard.get(index).equals(GameFigure.EMPTY)){
+                if(gameBoard.get(index).equals(GameFigure.EMPTY)) {
+                    match = false;
                     break;
                 }
-                if(j==0){
+                if(j==0) {
                     figure = gameBoard.get(index);
-                }else{
+                } else {
                     match = ifFigureMatch(figure, index);
-                    if(!match){
+                    if(!match) {
                         break;
                     }
                 }
             }
-            if(match){
+            if(match) {
                 return GameStatus.WIN;
             }
-            start = start + boardSQRT;
+
         }
         return GameStatus.CONTINUE;
     }
 
-    private GameStatus checkColumns(){
+    private GameStatus checkColumns() {
         int boardSize = tree.getRoot().getMaxChildrenCapacity();
         int boardSQRT = (int)Math.sqrt(tree.getRoot().getMaxChildrenCapacity());
-        int index=0;
+        int index;
         GameFigure figure = GameFigure.EMPTY;
         boolean match = false;
 
-        for(int i=0; i<boardSize-2; i+=boardSQRT){
-            for(int j=0; j<boardSQRT; j++){
+        for(int i=0; i<boardSQRT; i++) {
+            for(int j=0; j<boardSize; j+=boardSQRT) {
                 index = i+j;
 
-                if(gameBoard.get(index).equals(GameFigure.EMPTY)){
+                if(gameBoard.get(index).equals(GameFigure.EMPTY)) {
+                    match = false;
                     break;
                 }
-                if(j==0){
+                if(j==0) {
                     figure = gameBoard.get(index);
-                }else{
+                } else {
                     match = ifFigureMatch(figure, index);
-                    if(!match){
+                    if(!match) {
                         break;
                     }
                 }
             }
-            if(match){
+            if(match) {
                 return GameStatus.WIN;
             }
         }
@@ -223,13 +233,18 @@ public class Game{
         return gameBoard.get(index) == figure;
     }
 
-    private int findEmptyPosition() throws TicTacToeException{
-        for(int i=0; i<gameBoard.size(); i++){
-            if(gameBoard.get(i).equals(GameFigure.EMPTY)){
-                return i;
+    private int findEmptyPositionForNewNode() throws TicTacToeException {
+        for(int i=0; i<gameBoard.size(); i++) {
+            if(gameBoard.get(i).equals(GameFigure.EMPTY)) {
+
+                try {
+                    tree.findChildNodeWithGivenPosition(i);
+                } catch (NodeNotFoundException e) {
+                    return i;
+                }
             }
         }
-        throw new TicTacToeException("The board game is full");
+        throw new TicTacToeException("There are no empty slots on the game board");
     }
 
     /**
@@ -293,7 +308,7 @@ public class Game{
         // |----|-------|---|
         // |  0 |1|2|3  | 4 | index
 
-        if(regime == GameRegime.BATLE) {
+        if(regime == GameRegime.BATTLE) {
             nodeStatusPrioritySchema = new ArrayList<NodeStatus>(PRIORITY_SCHEMA_BATLE_SIZE);
 
             // high priority
