@@ -8,6 +8,5 @@ package org.dorofeev.tictactoe;
 public enum GameStatus {
     WIN,
     DRAW,
-    CONTINUE,
-    LOSE
+    CONTINUE
 }

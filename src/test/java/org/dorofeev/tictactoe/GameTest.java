@@ -26,8 +26,7 @@ public class GameTest {
 
     @Test
     public void testWinDiagonalsRight() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 2);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 4);
@@ -38,9 +37,7 @@ public class GameTest {
 
     @Test
     public void testWinDiagonalsLeft() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 0);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 4);
@@ -51,8 +48,7 @@ public class GameTest {
 
     @Test
     public void testWinColumn1() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 0);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 3);
@@ -63,8 +59,7 @@ public class GameTest {
 
     @Test
     public void testWinColumn2() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 1);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 4);
@@ -75,8 +70,7 @@ public class GameTest {
 
     @Test
     public void testWinColumn3() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 2);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 5);
@@ -87,8 +81,7 @@ public class GameTest {
 
     @Test
     public void testWinRow1() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 0);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 1);
@@ -99,8 +92,7 @@ public class GameTest {
 
     @Test
     public void testWinRow2() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 3);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 4);
@@ -111,8 +103,7 @@ public class GameTest {
 
     @Test
     public void testWinRow6() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 6);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 7);
@@ -123,8 +114,7 @@ public class GameTest {
 
     @Test
     public void testDraw() throws TicTacToeException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
         game.makeNewMove(GameFigure.X, 0);
         assertEquals(GameStatus.CONTINUE, game.getGameStatus());
         game.makeNewMove(GameFigure.X, 2);
@@ -148,8 +138,7 @@ public class GameTest {
 
     @Test
     public void testOLearningInSmallBattleRegime() throws TicTacToeException, UpdateStatusException, NodeNotFoundException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
 
         // game 1
         int position = game.makeNewMove(GameFigure.X);
@@ -244,8 +233,7 @@ public class GameTest {
 
     @Test
     public void testBattleRegime() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.BATTLE);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.BATTLE);
 
         int numberOfGames = 0;
         while (numberOfGames < MAX_NUMBER_OF_GAMES_FOR_BATLLE_3X3) {
@@ -279,8 +267,7 @@ public class GameTest {
 
     @Test
     public void testLearningRegime() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
-        Game game = new Game();
-        game.startNewGame(GameBoardSize.SMALL, GameRegime.LEARNING);
+        Game game = new Game(GameBoardSize.SMALL, GameRegime.LEARNING);
 
         int numberOfGames = 0;
         while (numberOfGames < MAX_NUMBER_OF_GAMES_FOR_LEARNING_3X3) {
@@ -306,6 +293,5 @@ public class GameTest {
             game.gameOver(status);
             return true;
         }
-
     }
 }

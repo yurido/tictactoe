@@ -26,7 +26,7 @@ public class Game {
      * @param boardSize the size of the the game board
      * @param gameRegime
      */
-    public void startNewGame(GameBoardSize boardSize, GameRegime gameRegime) throws TicTacToeException {
+    public Game(GameBoardSize boardSize, GameRegime gameRegime) throws TicTacToeException {
 
         if(tree == null || tree.getRoot().getMaxChildrenCapacity() != boardSize.getValue()) {
             tree = new Tree(boardSize.getValue());
@@ -86,8 +86,6 @@ public class Game {
         switch(gameStatus) {
             case WIN:
                 return NodeStatus.WIN;
-            case LOSE:
-                return NodeStatus.LOSE;
             case DRAW:
                 return NodeStatus.DRAW;
             default:
