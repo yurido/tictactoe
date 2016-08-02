@@ -162,7 +162,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusWithEmptyNodes() throws TicTacToeException, NodeNotFoundException{
+    public void updateBranchStatusWithEmptyNodes() throws TicTacToeException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.moveToRoot();
@@ -170,7 +170,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusDrawUnknown() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
+    public void updateBranchStatusDrawUnknown() throws TicTacToeException, UpdateStatusException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);
@@ -191,7 +191,7 @@ public class TreeTest {
     }
 
     @Test
-    public void updateBranchStatusUnknown() throws TicTacToeException, NodeNotFoundException, UpdateStatusException {
+    public void updateBranchStatusUnknown() throws TicTacToeException, UpdateStatusException {
         Tree tree = new Tree(2);
         tree.addNode(0);
         tree.addNode(2);

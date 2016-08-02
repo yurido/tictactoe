@@ -9,18 +9,17 @@ import java.util.UUID;
  * @author Yury Dorofeev
  * @version 2015-09-07
  */
-public class Node{
+public class Node {
     private Node parent=null;
-    private ArrayList<Node> children=null;
+    private ArrayList<Node> children = null;
     private UUID UID; // unique ID
-    private NodeStatus status=null;
+    private NodeStatus status = NodeStatus.UNKNOWN;
     private int position=0; // position on the game board
     private int weight=0;   // optimisation parameter
     private int level=0;    // the node level in the node tree
     private int maxChildrenCapacity=0;
 
-    public Node(int size) throws TicTacToeException
-    {
+    public Node(int size) throws TicTacToeException {
         parent = null;
         if(size<0)
         {
@@ -42,21 +41,18 @@ public class Node{
     {
         return parent;
     }
-    public void addChild(Node node) throws TicTacToeException
-    {
-        if(children!=null && children.size() >= getMaxChildrenCapacity())
-        {
+    public void addChild(Node node) throws TicTacToeException {
+        if(children!=null && children.size() >= getMaxChildrenCapacity()) {
             throw new TicTacToeException("The children collection is full. You can not add more nodes!");
         }
         node.setParent(this);
         node.setLevel(getLevel() + 1);
         children.add(node);
     }
-    public Node getChild(int index) throws TicTacToeException
-    {
+    public Node getChild(int index) throws TicTacToeException {
         try {
             return children.get(index);
-        }catch(IndexOutOfBoundsException e){
+        } catch(IndexOutOfBoundsException e) {
             throw new TicTacToeException("Child node with index " + index + " does not exist");
         }
     }
@@ -80,8 +76,7 @@ public class Node{
     {
         this.position = position;
     }
-    public void setWeight(int weight)
-    {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
     public int getWeight()
@@ -105,8 +100,7 @@ public class Node{
         this.level = level;
     }
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder value = new StringBuilder();
 
         value.append("Node, UUID=" + getUID());
@@ -114,18 +108,15 @@ public class Node{
         value.append(", level=" + getLevel());
         value.append(", position=" + getPosition());
 
-        if(getParent()!=null)
-        {
+        if(getParent() != null) {
             value.append(", parent=" + getParent().getUID());
         }
-        else
-        {
+        else {
             value.append(", parent=null");
         }
 
         String childrenNumber = "0";
-        if(children!=null)
-        {
+        if(children != null) {
             childrenNumber = String.valueOf(children.size());
         }
         value.append(", MAX children number=" + getMaxChildrenCapacity());

@@ -9,7 +9,7 @@ public enum GameBoardSize {
     SMALL(9),
     MEDIUM(16),
     LARGE(25);
-    private int value;
+    private final int value;
     GameBoardSize(int value){
         this.value=value;
     }
