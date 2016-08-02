@@ -1,6 +1,6 @@
-package org.dorofeev.tictactoe;
+package org.dorofeev.tictactoe.lib;
 
-import org.dorofeev.tictactoe.exception.TicTacToeException;
+import org.dorofeev.tictactoe.lib.exception.TicTacToeException;
 
 import java.util.Scanner;
 

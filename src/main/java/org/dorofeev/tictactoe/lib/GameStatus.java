@@ -1,4 +1,4 @@
-package org.dorofeev.tictactoe;
+package org.dorofeev.tictactoe.lib;
 
 /**
  * GameStatus

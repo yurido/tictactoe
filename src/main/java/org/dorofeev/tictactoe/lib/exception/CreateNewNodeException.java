@@ -1,4 +1,4 @@
-package org.dorofeev.tictactoe.exception;
+package org.dorofeev.tictactoe.lib.exception;
 
 /**
  * CreateNewNodeException

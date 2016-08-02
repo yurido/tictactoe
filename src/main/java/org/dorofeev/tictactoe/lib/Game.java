@@ -1,9 +1,9 @@
-package org.dorofeev.tictactoe;
+package org.dorofeev.tictactoe.lib;
 
-import org.dorofeev.tictactoe.exception.CreateNewNodeException;
-import org.dorofeev.tictactoe.exception.NodeNotFoundException;
-import org.dorofeev.tictactoe.exception.TicTacToeException;
-import org.dorofeev.tictactoe.exception.UpdateStatusException;
+import org.dorofeev.tictactoe.lib.exception.CreateNewNodeException;
+import org.dorofeev.tictactoe.lib.exception.NodeNotFoundException;
+import org.dorofeev.tictactoe.lib.exception.TicTacToeException;
+import org.dorofeev.tictactoe.lib.exception.UpdateStatusException;
 
 import java.util.ArrayList;
 

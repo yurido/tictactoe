@@ -1,10 +1,10 @@
-package org.dorofeev.tictactoe;
+package org.dorofeev.tictactoe.lib;
 
 import static org.junit.Assert.*;
 
-import org.dorofeev.tictactoe.exception.NodeNotFoundException;
-import org.dorofeev.tictactoe.exception.TicTacToeException;
-import org.dorofeev.tictactoe.exception.UpdateStatusException;
+import org.dorofeev.tictactoe.lib.exception.NodeNotFoundException;
+import org.dorofeev.tictactoe.lib.exception.TicTacToeException;
+import org.dorofeev.tictactoe.lib.exception.UpdateStatusException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
