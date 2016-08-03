@@ -25,6 +25,7 @@
 		<mockito.version>1.10.19</mockito.version>
 		<junit.version>4.12</junit.version>
 		<hamcrest.version>1.3</hamcrest.version>
+        <ttt-lib.version>1.0</ttt-lib.version>
 	</properties>
 
 	<dependencies>
@@ -58,6 +59,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.dorofeev.tictactoe</groupId>
+            <artifactId>ttt-lib</artifactId>
+            <version>${ttt-lib.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/ttt-lib-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
 	</dependencies>
 
 	<build>
