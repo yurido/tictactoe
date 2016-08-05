@@ -2,3 +2,8 @@
 *.class
 *.iml
 */target/*
+/client/src/typings
+/client/src/node_modules
+*.log
+*.js.map
+*.tmp
