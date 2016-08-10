@@ -3,7 +3,7 @@
 *.iml
 */target/*
 /client/src/typings
-/client/src/app/*.js
+/client/src/app/**/*.js
 /client/src/node_modules
 *.log
 *.js.map
