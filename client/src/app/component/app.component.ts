@@ -1,20 +1,11 @@
-import { Component }          from '@angular/core';
-import { ROUTER_DIRECTIVES }  from '@angular/router';
-
-import { HeroService }        from '../service/hero.service';
-import { DashboardComponent } from './dashboard.component';
-import { HeroesComponent }    from './heroes.component';
-import { HeroDetailComponent }from './hero-detail.component';
+import { Component } from '@angular/core';
+import '../rxjs-extensions';
 
 @Component({
     selector: 'my-app',
     templateUrl: '../../html/app.component.html',
-    styleUrls:  ['../../css/app.component.css'],
-    directives: [ROUTER_DIRECTIVES],
-    providers:  [HeroService],
-    precompile: [DashboardComponent, HeroesComponent, HeroDetailComponent]
+    styleUrls:  ['../../css/app.component.css']
 })
-
 export class AppComponent {
     title = 'Tour of Heroes';
 }
