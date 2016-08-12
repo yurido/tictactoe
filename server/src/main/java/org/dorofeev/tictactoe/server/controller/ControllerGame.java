@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 02/08/16
  */
 @RestController
+@RequestMapping(value = "/tictactoe")
 public class ControllerGame {
     private static final int MAX_NUMBER_OF_GAMES = 39000;
     private Game game;

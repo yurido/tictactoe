@@ -1,0 +1,5 @@
+zuul:
+  routes:
+    server:
+      path: /tictactoe/**
+      url: http://localhost:8081/tictactoe

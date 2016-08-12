@@ -1,4 +1,4 @@
-This is the Angular 2.0 project, wrapped with SpringBoot
+## This is the Angular 2.0 project, wrapped with SpringBoot
 
 This project can be built and run independently from the parent TicTacToe project
 

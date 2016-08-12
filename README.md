@@ -1,4 +1,4 @@
-This is instruction how to build and run correctly this fantastic program TicTacToe
+## This is instruction how to build and run correctly this fantastic program TicTacToe
 
 The projects consists of 3 sub-projects: 
     - core:   the engine
