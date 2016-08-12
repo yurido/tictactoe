@@ -10,14 +10,39 @@
     </parent>
 
     <artifactId>client</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>client</name>
     <description>Frontend for project TicTacToe</description>
 
-    <dependencies></dependencies>
-    <build>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <warSourceDirectory>
+                        ${basedir}/src/
+                    </warSourceDirectory>
+                </configuration>
+            </plugin -->
+        </plugins>
     </build>
 
 </project>

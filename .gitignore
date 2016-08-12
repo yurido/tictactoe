@@ -2,9 +2,9 @@
 *.class
 *.iml
 */target/*
-/client/src/typings
-/client/src/app/**/*.js
-/client/src/node_modules
+/client/src/main/resources/public/typings
+/client/src/main/resources/public/app/**/*.js
+/client/src/main/resources/public/node_modules
 *.log
 *.js.map
 *.tmp
